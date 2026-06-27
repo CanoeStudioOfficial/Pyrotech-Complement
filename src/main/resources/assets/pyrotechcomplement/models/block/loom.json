@@ -1,0 +1,74 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "wood": "pyrotech:blocks/planks_tarred",
+    "post": "minecraft:blocks/log_oak",
+    "fiber": "pyrotech:blocks/bag_top_cloth",
+    "particle": "pyrotech:blocks/planks_tarred"
+  },
+  "elements": [
+    {
+      "from": [1, 0, 8],
+      "to": [3, 16, 10],
+      "faces": {
+        "north": {"uv": [0, 0, 2, 16], "texture": "#post"},
+        "east": {"uv": [0, 0, 2, 16], "texture": "#post"},
+        "south": {"uv": [0, 0, 2, 16], "texture": "#post"},
+        "west": {"uv": [0, 0, 2, 16], "texture": "#post"},
+        "up": {"uv": [0, 0, 2, 2], "texture": "#post"},
+        "down": {"uv": [0, 0, 2, 2], "texture": "#post"}
+      }
+    },
+    {
+      "from": [13, 0, 8],
+      "to": [15, 16, 10],
+      "faces": {
+        "north": {"uv": [0, 0, 2, 16], "texture": "#post"},
+        "east": {"uv": [0, 0, 2, 16], "texture": "#post"},
+        "south": {"uv": [0, 0, 2, 16], "texture": "#post"},
+        "west": {"uv": [0, 0, 2, 16], "texture": "#post"},
+        "up": {"uv": [0, 0, 2, 2], "texture": "#post"},
+        "down": {"uv": [0, 0, 2, 2], "texture": "#post"}
+      }
+    },
+    {
+      "from": [0, 13, 7],
+      "to": [16, 15, 11],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 2], "texture": "#wood"},
+        "east": {"uv": [0, 0, 4, 2], "texture": "#wood"},
+        "south": {"uv": [0, 0, 16, 2], "texture": "#wood"},
+        "west": {"uv": [0, 0, 4, 2], "texture": "#wood"},
+        "up": {"uv": [0, 0, 16, 4], "texture": "#wood"},
+        "down": {"uv": [0, 0, 16, 4], "texture": "#wood"}
+      }
+    },
+    {
+      "from": [0, 2, 7],
+      "to": [16, 4, 11],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 2], "texture": "#wood"},
+        "east": {"uv": [0, 0, 4, 2], "texture": "#wood"},
+        "south": {"uv": [0, 0, 16, 2], "texture": "#wood"},
+        "west": {"uv": [0, 0, 4, 2], "texture": "#wood"},
+        "up": {"uv": [0, 0, 16, 4], "texture": "#wood"},
+        "down": {"uv": [0, 0, 16, 4], "texture": "#wood"}
+      }
+    },
+    {
+      "from": [3, 4, 9.02],
+      "to": [13, 13, 9.02],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#fiber"},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#fiber"}
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [30, 225, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.625, 0.625, 0.625]
+    }
+  }
+}

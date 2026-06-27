@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SFS",
+    "FLF",
+    "SFS"
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    },
+    "F": {
+      "type": "forge:ore_dict",
+      "ore": "twine"
+    },
+    "L": {
+      "item": "pyrotechcomplement:crude_loom"
+    }
+  },
+  "result": {
+    "item": "pyrotechcomplement:loom"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "block.loom.weave": {
+    "category": "block",
+    "sounds": [
+      "minecraft:block/wood_button/click_on"
+    ]
+  }
+}
