@@ -3,7 +3,6 @@ package com.canoestudios.pyrotechcomplement.init;
 import com.canoestudios.pyrotechcomplement.Tags;
 import com.canoestudios.pyrotechcomplement.block.BlockLoom;
 import com.canoestudios.pyrotechcomplement.tile.TileLoom;
-import com.codetaylor.mc.pyrotech.ModPyrotech;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -36,7 +35,7 @@ public final class ModBlocks {
 
     ItemBlock itemBlock = new ItemBlock(block);
     itemBlock.setRegistryName(block.getRegistryName());
-    itemBlock.setCreativeTab(ModPyrotech.CREATIVE_TAB);
+    itemBlock.setCreativeTab(ModCreativeTabs.PYROTECH_COMPLEMENT);
     registry.register(itemBlock);
   }
 

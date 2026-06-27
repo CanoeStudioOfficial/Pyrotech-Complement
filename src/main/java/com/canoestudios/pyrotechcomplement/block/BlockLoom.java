@@ -1,8 +1,8 @@
 package com.canoestudios.pyrotechcomplement.block;
 
 import com.canoestudios.pyrotechcomplement.Tags;
+import com.canoestudios.pyrotechcomplement.init.ModCreativeTabs;
 import com.canoestudios.pyrotechcomplement.tile.TileLoom;
-import com.codetaylor.mc.pyrotech.ModPyrotech;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
@@ -43,7 +43,7 @@ public class BlockLoom
     this.tier = tier;
     this.setRegistryName(Tags.MOD_ID, name);
     this.setTranslationKey(Tags.MOD_ID + "." + name);
-    this.setCreativeTab(ModPyrotech.CREATIVE_TAB);
+    this.setCreativeTab(ModCreativeTabs.PYROTECH_COMPLEMENT);
     this.setHardness(tier == Tier.CRUDE ? 0.5f : 1.0f);
     this.setResistance(5.0f);
     this.setSoundType(SoundType.WOOD);

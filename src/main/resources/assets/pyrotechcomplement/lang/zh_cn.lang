@@ -1,2 +1,4 @@
 tile.pyrotechcomplement.crude_loom.name=简陋织机
 tile.pyrotechcomplement.loom.name=织机
+itemGroup.pyrotechcomplement=火种科技 补充
+gui.pyrotechcomplement.jei.category.loom=织机
