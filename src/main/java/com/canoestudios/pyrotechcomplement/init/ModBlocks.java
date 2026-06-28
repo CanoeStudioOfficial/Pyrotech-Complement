@@ -4,6 +4,7 @@ import com.canoestudios.pyrotechcomplement.Tags;
 import com.canoestudios.pyrotechcomplement.block.BlockForgingTable;
 import com.canoestudios.pyrotechcomplement.block.BlockLoom;
 import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomery;
+import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomeryMolten;
 import com.canoestudios.pyrotechcomplement.tile.TileForgingTable;
 import com.canoestudios.pyrotechcomplement.tile.TileLoom;
 import com.canoestudios.pyrotechcomplement.tile.TilePrimitiveBloomery;
@@ -26,6 +27,7 @@ public final class ModBlocks {
   public static final BlockForgingTable FORGING_TABLE_OBSIDIAN = new BlockForgingTable("forging_table_obsidian", BlockForgingTable.Style.OBSIDIAN);
   public static final BlockForgingTable FORGING_TABLE_IRONCLAD = new BlockForgingTable("forging_table_ironclad", BlockForgingTable.Style.IRONCLAD);
   public static final BlockPrimitiveBloomery PRIMITIVE_BLOOMERY = new BlockPrimitiveBloomery("primitive_bloomery");
+  public static final BlockPrimitiveBloomeryMolten PRIMITIVE_BLOOMERY_MOLTEN = new BlockPrimitiveBloomeryMolten("primitive_bloomery_molten");
 
   public static void registerBlocks(IForgeRegistry<Block> registry) {
 
@@ -35,6 +37,7 @@ public final class ModBlocks {
     registry.register(FORGING_TABLE_OBSIDIAN);
     registry.register(FORGING_TABLE_IRONCLAD);
     registry.register(PRIMITIVE_BLOOMERY);
+    registry.register(PRIMITIVE_BLOOMERY_MOLTEN);
   }
 
   public static void registerItems(IForgeRegistry<Item> registry) {

@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "layers=1,lit=false": { "model": "pyrotechcomplement:primitive_bloomery_molten_1" },
+    "layers=2,lit=false": { "model": "pyrotechcomplement:primitive_bloomery_molten_2" },
+    "layers=3,lit=false": { "model": "pyrotechcomplement:primitive_bloomery_molten_3" },
+    "layers=4,lit=false": { "model": "pyrotechcomplement:primitive_bloomery_molten_4" },
+    "layers=1,lit=true": { "model": "pyrotechcomplement:primitive_bloomery_molten_lit_1" },
+    "layers=2,lit=true": { "model": "pyrotechcomplement:primitive_bloomery_molten_lit_2" },
+    "layers=3,lit=true": { "model": "pyrotechcomplement:primitive_bloomery_molten_lit_3" },
+    "layers=4,lit=true": { "model": "pyrotechcomplement:primitive_bloomery_molten_lit_4" }
+  }
+}

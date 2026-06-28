@@ -92,7 +92,7 @@ public final class ModRecipes {
     registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_coal",
         new OreIngredient("oreIron"),
         1,
-        new OreIngredient("coal"),
+        Ingredient.fromStacks(new ItemStack(Items.COAL, 1, 0)),
         1,
         20 * 60 * 6,
         12,

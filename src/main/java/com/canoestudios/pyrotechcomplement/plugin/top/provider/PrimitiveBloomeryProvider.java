@@ -3,6 +3,7 @@ package com.canoestudios.pyrotechcomplement.plugin.top.provider;
 import com.canoestudios.pyrotechcomplement.Tags;
 import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
 import com.canoestudios.pyrotechcomplement.tile.TilePrimitiveBloomery;
+import com.codetaylor.mc.athenaeum.util.StringHelper;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
@@ -67,6 +68,11 @@ public class PrimitiveBloomeryProvider
     if (recipe != null && tile.getBurnTimeTicks() > 0) {
       horizontal.progress(tile.getProgress(), tile.getBurnTimeTicks(), new ProgressStyle().height(18).width(64).showText(false));
       horizontal.item(recipe.getOutput());
+      probeInfo.text(I18n.translateToLocalFormatted(
+          "gui." + Tags.MOD_ID + ".top.primitive_bloomery.time",
+          StringHelper.ticksToHMS(tile.getProgress()),
+          StringHelper.ticksToHMS(tile.getBurnTimeTicks())
+      ));
     }
   }
 }

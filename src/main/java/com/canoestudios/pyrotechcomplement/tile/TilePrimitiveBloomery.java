@@ -1,6 +1,8 @@
 package com.canoestudios.pyrotechcomplement.tile;
 
 import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomery;
+import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomeryMolten;
+import com.canoestudios.pyrotechcomplement.init.ModBlocks;
 import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
 import com.codetaylor.mc.athenaeum.spi.TileEntityBase;
 import net.minecraft.block.Block;
@@ -36,6 +38,7 @@ public class TilePrimitiveBloomery
   private static final int SLOT_OUTPUT = 2;
   private static final int MAX_CHIMNEY_LEVELS = 4;
   private static final int CAPACITY_PER_CHIMNEY_LEVEL = 8;
+  private static final int MOLTEN_LAYERS = 4;
 
   private final ItemStackHandler inventory = new ItemStackHandler(3) {
     @Override
@@ -78,6 +81,10 @@ public class TilePrimitiveBloomery
     } else {
       this.collectItemsFromWorld();
     }
+
+    IBlockState updatedState = this.world.getBlockState(this.pos);
+    this.updateMoltenBlocks(updatedState.getBlock() instanceof BlockPrimitiveBloomery
+        && updatedState.getValue(BlockPrimitiveBloomery.LIT));
   }
 
   public boolean onRightClick(EntityPlayer player, EnumHand hand) {
@@ -88,6 +95,7 @@ public class TilePrimitiveBloomery
         ItemHandlerHelper.giveItemToPlayer(player, output.copy());
         this.inventory.setStackInSlot(SLOT_OUTPUT, ItemStack.EMPTY);
         this.clearProgress();
+        this.updateMoltenBlocks(false);
       }
       return true;
     }
@@ -152,6 +160,8 @@ public class TilePrimitiveBloomery
         this.world.spawnEntity(entityItem);
       }
     }
+
+    this.clearMoltenBlocks();
   }
 
   private void updateLit(IBlockState state) {
@@ -201,6 +211,7 @@ public class TilePrimitiveBloomery
     this.inventory.setStackInSlot(SLOT_INPUT, input.isEmpty() ? ItemStack.EMPTY : input);
     this.inventory.setStackInSlot(SLOT_FUEL, fuel.isEmpty() ? ItemStack.EMPTY : fuel);
     this.inventory.setStackInSlot(SLOT_OUTPUT, this.recipe.getOutput(batches, this.world.rand));
+    this.clearMoltenBlocks();
 
     this.progress = 0;
     this.burnTimeTicks = 0;
@@ -215,6 +226,7 @@ public class TilePrimitiveBloomery
     this.progress = 0;
     this.burnTimeTicks = 0;
     this.world.setBlockState(this.pos, state.withProperty(BlockPrimitiveBloomery.LIT, false), 3);
+    this.updateMoltenBlocks(false);
     this.notifyBlockUpdate();
   }
 
@@ -331,6 +343,7 @@ public class TilePrimitiveBloomery
         ItemHandlerHelper.giveItemToPlayer(player, fuel.copy());
         this.inventory.setStackInSlot(SLOT_FUEL, ItemStack.EMPTY);
         this.clearProgress();
+        this.updateMoltenBlocks(false);
       }
       return true;
     }
@@ -341,6 +354,7 @@ public class TilePrimitiveBloomery
         ItemHandlerHelper.giveItemToPlayer(player, input.copy());
         this.inventory.setStackInSlot(SLOT_INPUT, ItemStack.EMPTY);
         this.clearProgress();
+        this.updateMoltenBlocks(false);
       }
       return true;
     }
@@ -352,7 +366,7 @@ public class TilePrimitiveBloomery
 
     BlockPos internalPos = this.getInternalPos();
 
-    if (!this.world.isAirBlock(internalPos)
+    if (!this.isInternalSpace(internalPos)
         || !this.isStoneBlock(internalPos.down())) {
       return false;
     }
@@ -374,7 +388,7 @@ public class TilePrimitiveBloomery
     for (int i = 1; i <= MAX_CHIMNEY_LEVELS; i++) {
       BlockPos center = internalPos.up(i);
 
-      if (!this.world.isAirBlock(center)) {
+      if (!this.isInternalSpace(center)) {
         return i - 1;
       }
 
@@ -403,10 +417,88 @@ public class TilePrimitiveBloomery
         + this.inventory.getStackInSlot(SLOT_FUEL).getCount();
   }
 
+  private boolean isInternalSpace(BlockPos pos) {
+
+    IBlockState state = this.world.getBlockState(pos);
+    return state.getBlock().isAir(state, this.world, pos)
+        || state.getBlock() == ModBlocks.PRIMITIVE_BLOOMERY_MOLTEN;
+  }
+
+  private void updateMoltenBlocks(boolean lit) {
+
+    if (this.world == null || this.world.isRemote) {
+      return;
+    }
+
+    BlockPos internalPos = this.getInternalPos();
+    if (!this.isFormed()) {
+      this.clearMoltenBlocks();
+      return;
+    }
+
+    int maxHeight = this.getChimneyLevels();
+    int layers = 0;
+    int stored = this.getStoredInputCount();
+
+    if (stored > 0) {
+      layers = Math.max(1, (MOLTEN_LAYERS * stored + CAPACITY_PER_CHIMNEY_LEVEL - 1) / CAPACITY_PER_CHIMNEY_LEVEL);
+    }
+
+    for (int y = 0; y < maxHeight; y++) {
+      BlockPos checkPos = internalPos.up(y);
+
+      if (layers >= MOLTEN_LAYERS) {
+        this.setMoltenBlock(checkPos, MOLTEN_LAYERS, lit);
+        layers -= MOLTEN_LAYERS;
+      } else if (layers > 0) {
+        this.setMoltenBlock(checkPos, layers, lit);
+        layers = 0;
+      } else if (this.world.getBlockState(checkPos).getBlock() == ModBlocks.PRIMITIVE_BLOOMERY_MOLTEN) {
+        this.world.setBlockToAir(checkPos);
+      }
+    }
+  }
+
+  private void setMoltenBlock(BlockPos pos, int layers, boolean lit) {
+
+    IBlockState current = this.world.getBlockState(pos);
+    if (!current.getBlock().isAir(current, this.world, pos)
+        && current.getBlock() != ModBlocks.PRIMITIVE_BLOOMERY_MOLTEN) {
+      return;
+    }
+
+    IBlockState state = ModBlocks.PRIMITIVE_BLOOMERY_MOLTEN.getDefaultState()
+        .withProperty(BlockPrimitiveBloomeryMolten.LAYERS, Math.max(1, Math.min(MOLTEN_LAYERS, layers)))
+        .withProperty(BlockPrimitiveBloomeryMolten.LIT, lit);
+
+    if (current.getBlock() != ModBlocks.PRIMITIVE_BLOOMERY_MOLTEN || !current.equals(state)) {
+      this.world.setBlockState(pos, state, 3);
+    }
+  }
+
+  private void clearMoltenBlocks() {
+
+    if (this.world == null || this.world.isRemote) {
+      return;
+    }
+
+    BlockPos internalPos = this.getInternalPos();
+    for (int y = 0; y < MAX_CHIMNEY_LEVELS; y++) {
+      BlockPos checkPos = internalPos.up(y);
+      if (this.world.getBlockState(checkPos).getBlock() == ModBlocks.PRIMITIVE_BLOOMERY_MOLTEN) {
+        this.world.setBlockToAir(checkPos);
+      }
+    }
+  }
+
   private boolean isStoneBlock(BlockPos pos) {
 
     IBlockState state = this.world.getBlockState(pos);
     Block block = state.getBlock();
+
+    if (block == ModBlocks.PRIMITIVE_BLOOMERY_MOLTEN) {
+      return false;
+    }
 
     if (state.getMaterial() == Material.ROCK) {
       return true;

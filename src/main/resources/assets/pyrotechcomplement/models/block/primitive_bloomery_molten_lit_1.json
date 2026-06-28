@@ -1,0 +1,7 @@
+{
+  "parent": "pyrotechcomplement:block/primitive_bloomery_molten_1",
+  "textures": {
+    "all": "pyrotech:blocks/slag_hot",
+    "particle": "pyrotech:blocks/slag_hot"
+  }
+}
