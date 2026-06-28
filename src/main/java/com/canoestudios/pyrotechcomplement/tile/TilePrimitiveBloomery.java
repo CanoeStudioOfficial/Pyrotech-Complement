@@ -435,6 +435,10 @@ public class TilePrimitiveBloomery
     }
 
     ItemStack stack = new ItemStack(item, 1, block.damageDropped(state));
+    if (stack.isEmpty()) {
+      return false;
+    }
+
     for (int id : OreDictionary.getOreIDs(stack)) {
       String oreName = OreDictionary.getOreName(id).toLowerCase(Locale.ROOT);
       if (oreName.contains("stone") || oreName.contains("cobble") || oreName.contains("rock")) {
