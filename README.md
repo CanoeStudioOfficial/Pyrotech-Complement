@@ -24,8 +24,11 @@ Optional integrations:
 - Granite Forging Table
 - Obsidian Forging Table
 - Ironclad Forging Table
+- Primitive Bloomery
 
 The forging tables use Pyrotech hammer support. Pyrotech hammers, Pyrotech's hammer config list, tool class `hammer`, and ore dictionary hammers such as `toolHammer` are accepted.
+
+The primitive bloomery is a loose, early-game multiblock inspired by TFC's bloomery. Place the bloomery door against an empty internal block, surround the internal block and chimney with stone-like blocks, drop ore and fuel into the chimney, then light the door. The default iron recipes produce Pyrotech blooms.
 
 ## CraftTweaker
 
@@ -149,11 +152,69 @@ mods.pyrotechcomplement.ForgingTable.removeRecipes(<pyrotech:material:19>);
 // mods.pyrotechcomplement.ForgingTable.removeAllRecipes();
 ```
 
+### Primitive Bloomery
+
+ZenClass:
+
+```zenscript
+mods.pyrotechcomplement.PrimitiveBloomery
+```
+
+Methods:
+
+```zenscript
+mods.pyrotechcomplement.PrimitiveBloomery.addRecipe(
+    string name,
+    IItemStack output,
+    IIngredient input,
+    int inputCount,
+    IIngredient fuel,
+    int fuelCount,
+    int burnTimeTicks
+);
+
+mods.pyrotechcomplement.PrimitiveBloomery.addBloomRecipe(
+    string name,
+    IIngredient input,
+    int inputCount,
+    IIngredient fuel,
+    int fuelCount,
+    int burnTimeTicks,
+    int bloomYieldMin,
+    int bloomYieldMax,
+    float experience,
+    string bloomRecipeId,
+    string bloomLangKey
+);
+
+mods.pyrotechcomplement.PrimitiveBloomery.removeRecipes(IIngredient output);
+mods.pyrotechcomplement.PrimitiveBloomery.removeAllRecipes();
+```
+
+Example:
+
+```zenscript
+// 1 oreIron + 1 coal -> a Pyrotech bloom after 6 minutes.
+mods.pyrotechcomplement.PrimitiveBloomery.addBloomRecipe(
+    "iron_bloom_from_ore_and_coal",
+    <ore:oreIron>,
+    1,
+    <ore:coal>,
+    1,
+    20 * 60 * 6,
+    12,
+    15,
+    0.25,
+    "pyrotech:bloom_from_oreiron",
+    "tile.oreIron"
+);
+```
+
 ## JEI and TOP
 
-JEI recipe categories are available for the loom and forging table. The forging table JEI category shows the primary input, optional secondary input, accepted hammers, hammer-hit count, and output.
+JEI recipe categories are available for the loom, forging table, and primitive bloomery. The primitive bloomery category shows ore input, fuel input, burn time, and output.
 
-The One Probe displays active block progress and output previews for the loom and forging table.
+The One Probe displays active block progress and output previews for the loom, forging table, and primitive bloomery.
 
 ## Build
 

@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,lit=false,open=false": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed"
+    },
+    "facing=east,lit=false,open=false": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed",
+      "y": 90
+    },
+    "facing=south,lit=false,open=false": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed",
+      "y": 180
+    },
+    "facing=west,lit=false,open=false": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed",
+      "y": 270
+    },
+    "facing=north,lit=true,open=false": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed_lit"
+    },
+    "facing=east,lit=true,open=false": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed_lit",
+      "y": 90
+    },
+    "facing=south,lit=true,open=false": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed_lit",
+      "y": 180
+    },
+    "facing=west,lit=true,open=false": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed_lit",
+      "y": 270
+    },
+    "facing=north,lit=false,open=true": {
+      "model": "pyrotechcomplement:primitive_bloomery_open"
+    },
+    "facing=east,lit=false,open=true": {
+      "model": "pyrotechcomplement:primitive_bloomery_open",
+      "y": 90
+    },
+    "facing=south,lit=false,open=true": {
+      "model": "pyrotechcomplement:primitive_bloomery_open",
+      "y": 180
+    },
+    "facing=west,lit=false,open=true": {
+      "model": "pyrotechcomplement:primitive_bloomery_open",
+      "y": 270
+    },
+    "facing=north,lit=true,open=true": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed_lit"
+    },
+    "facing=east,lit=true,open=true": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed_lit",
+      "y": 90
+    },
+    "facing=south,lit=true,open=true": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed_lit",
+      "y": 180
+    },
+    "facing=west,lit=true,open=true": {
+      "model": "pyrotechcomplement:primitive_bloomery_closed_lit",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "pyrotech:modules_enabled",
+      "include": ["module.tech.basic"]
+    }
+  ],
+  "pattern": [
+    "S S",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "type": "forge:ore_dict",
+      "ore": "cobblestone"
+    }
+  },
+  "result": {
+    "item": "pyrotechcomplement:primitive_bloomery"
+  }
+}

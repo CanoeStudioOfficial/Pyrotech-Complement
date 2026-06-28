@@ -3,8 +3,10 @@ package com.canoestudios.pyrotechcomplement.init;
 import com.canoestudios.pyrotechcomplement.Tags;
 import com.canoestudios.pyrotechcomplement.block.BlockForgingTable;
 import com.canoestudios.pyrotechcomplement.block.BlockLoom;
+import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomery;
 import com.canoestudios.pyrotechcomplement.tile.TileForgingTable;
 import com.canoestudios.pyrotechcomplement.tile.TileLoom;
+import com.canoestudios.pyrotechcomplement.tile.TilePrimitiveBloomery;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -23,6 +25,7 @@ public final class ModBlocks {
   public static final BlockForgingTable FORGING_TABLE_GRANITE = new BlockForgingTable("forging_table_granite", BlockForgingTable.Style.GRANITE);
   public static final BlockForgingTable FORGING_TABLE_OBSIDIAN = new BlockForgingTable("forging_table_obsidian", BlockForgingTable.Style.OBSIDIAN);
   public static final BlockForgingTable FORGING_TABLE_IRONCLAD = new BlockForgingTable("forging_table_ironclad", BlockForgingTable.Style.IRONCLAD);
+  public static final BlockPrimitiveBloomery PRIMITIVE_BLOOMERY = new BlockPrimitiveBloomery("primitive_bloomery");
 
   public static void registerBlocks(IForgeRegistry<Block> registry) {
 
@@ -31,6 +34,7 @@ public final class ModBlocks {
     registry.register(FORGING_TABLE_GRANITE);
     registry.register(FORGING_TABLE_OBSIDIAN);
     registry.register(FORGING_TABLE_IRONCLAD);
+    registry.register(PRIMITIVE_BLOOMERY);
   }
 
   public static void registerItems(IForgeRegistry<Item> registry) {
@@ -40,6 +44,7 @@ public final class ModBlocks {
     registerItemBlock(registry, FORGING_TABLE_GRANITE);
     registerItemBlock(registry, FORGING_TABLE_OBSIDIAN);
     registerItemBlock(registry, FORGING_TABLE_IRONCLAD);
+    registerItemBlock(registry, PRIMITIVE_BLOOMERY);
   }
 
   private static void registerItemBlock(IForgeRegistry<Item> registry, Block block) {
@@ -54,6 +59,7 @@ public final class ModBlocks {
 
     GameRegistry.registerTileEntity(TileLoom.class, new ResourceLocation(Tags.MOD_ID, "tile.loom"));
     GameRegistry.registerTileEntity(TileForgingTable.class, new ResourceLocation(Tags.MOD_ID, "tile.forging_table"));
+    GameRegistry.registerTileEntity(TilePrimitiveBloomery.class, new ResourceLocation(Tags.MOD_ID, "tile.primitive_bloomery"));
   }
 
   @SideOnly(Side.CLIENT)
@@ -64,6 +70,7 @@ public final class ModBlocks {
     registerModel(Item.getItemFromBlock(FORGING_TABLE_GRANITE), "forging_table_granite");
     registerModel(Item.getItemFromBlock(FORGING_TABLE_OBSIDIAN), "forging_table_obsidian");
     registerModel(Item.getItemFromBlock(FORGING_TABLE_IRONCLAD), "forging_table_ironclad");
+    registerModel(Item.getItemFromBlock(PRIMITIVE_BLOOMERY), "primitive_bloomery");
   }
 
   @SideOnly(Side.CLIENT)

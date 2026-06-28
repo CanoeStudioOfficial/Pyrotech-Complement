@@ -4,10 +4,13 @@ import com.canoestudios.pyrotechcomplement.init.ModBlocks;
 import com.canoestudios.pyrotechcomplement.init.ModRecipes;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryForgingTable;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryLoom;
+import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryPrimitiveBloomery;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperForgingTable;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperLoom;
+import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperPrimitiveBloomery;
 import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
+import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IModPlugin;
@@ -30,7 +33,8 @@ public class PluginJEI
 
     registry.addRecipeCategories(
         new JEIRecipeCategoryLoom(guiHelper),
-        new JEIRecipeCategoryForgingTable(guiHelper)
+        new JEIRecipeCategoryForgingTable(guiHelper),
+        new JEIRecipeCategoryPrimitiveBloomery(guiHelper)
     );
   }
 
@@ -47,6 +51,10 @@ public class PluginJEI
     registry.addRecipeCatalyst(new ItemStack(ModBlocks.FORGING_TABLE_IRONCLAD), JEIRecipeCategoryForgingTable.UID);
     registry.handleRecipes(ForgingTableRecipe.class, JEIRecipeWrapperForgingTable::new, JEIRecipeCategoryForgingTable.UID);
     registry.addRecipes(this.getForgingTableRecipes(), JEIRecipeCategoryForgingTable.UID);
+
+    registry.addRecipeCatalyst(new ItemStack(ModBlocks.PRIMITIVE_BLOOMERY), JEIRecipeCategoryPrimitiveBloomery.UID);
+    registry.handleRecipes(PrimitiveBloomeryRecipe.class, JEIRecipeWrapperPrimitiveBloomery::new, JEIRecipeCategoryPrimitiveBloomery.UID);
+    registry.addRecipes(this.getPrimitiveBloomeryRecipes(), JEIRecipeCategoryPrimitiveBloomery.UID);
   }
 
   private List<LoomRecipe> getLoomRecipes() {
@@ -73,5 +81,18 @@ public class PluginJEI
     }
 
     return new ArrayList<>(ModRecipes.FORGING_TABLE_RECIPES.getValuesCollection());
+  }
+
+  private List<PrimitiveBloomeryRecipe> getPrimitiveBloomeryRecipes() {
+
+    if (ModRecipes.PRIMITIVE_BLOOMERY_RECIPES == null) {
+      ModRecipes.initRegistry();
+    }
+
+    if (ModRecipes.PRIMITIVE_BLOOMERY_RECIPES == null) {
+      return Collections.emptyList();
+    }
+
+    return new ArrayList<>(ModRecipes.PRIMITIVE_BLOOMERY_RECIPES.getValuesCollection());
   }
 }

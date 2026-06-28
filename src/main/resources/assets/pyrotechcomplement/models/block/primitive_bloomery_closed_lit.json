@@ -1,0 +1,6 @@
+{
+  "parent": "pyrotechcomplement:block/primitive_bloomery_closed",
+  "textures": {
+    "front": "pyrotech:blocks/bloomery_front_lit"
+  }
+}

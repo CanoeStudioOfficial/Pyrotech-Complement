@@ -3,6 +3,8 @@ package com.canoestudios.pyrotechcomplement.init;
 import com.canoestudios.pyrotechcomplement.Tags;
 import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
+import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
+import com.codetaylor.mc.pyrotech.modules.core.ModuleCore;
 import com.codetaylor.mc.pyrotech.modules.core.item.ItemMaterial;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,17 +19,19 @@ public final class ModRecipes {
 
   public static IForgeRegistryModifiable<LoomRecipe> LOOM_RECIPES;
   public static IForgeRegistryModifiable<ForgingTableRecipe> FORGING_TABLE_RECIPES;
+  public static IForgeRegistryModifiable<PrimitiveBloomeryRecipe> PRIMITIVE_BLOOMERY_RECIPES;
 
   @SuppressWarnings("unchecked")
   public static void initRegistry() {
 
     LOOM_RECIPES = (IForgeRegistryModifiable<LoomRecipe>) GameRegistry.findRegistry(LoomRecipe.class);
     FORGING_TABLE_RECIPES = (IForgeRegistryModifiable<ForgingTableRecipe>) GameRegistry.findRegistry(ForgingTableRecipe.class);
+    PRIMITIVE_BLOOMERY_RECIPES = (IForgeRegistryModifiable<PrimitiveBloomeryRecipe>) GameRegistry.findRegistry(PrimitiveBloomeryRecipe.class);
   }
 
   public static void registerDefaults() {
 
-    if (LOOM_RECIPES == null || FORGING_TABLE_RECIPES == null) {
+    if (LOOM_RECIPES == null || FORGING_TABLE_RECIPES == null || PRIMITIVE_BLOOMERY_RECIPES == null) {
       initRegistry();
     }
 
@@ -84,6 +88,71 @@ public final class ModRecipes {
         1,
         4
     );
+
+    registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_coal",
+        new OreIngredient("oreIron"),
+        1,
+        new OreIngredient("coal"),
+        1,
+        20 * 60 * 6,
+        12,
+        15,
+        0.25f,
+        "pyrotech:bloom_from_oreiron",
+        "tile.oreIron"
+    );
+
+    registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_charcoal",
+        new OreIngredient("oreIron"),
+        1,
+        Ingredient.fromStacks(new ItemStack(Items.COAL, 1, 1)),
+        1,
+        20 * 60 * 6,
+        12,
+        15,
+        0.25f,
+        "pyrotech:bloom_from_oreiron",
+        "tile.oreIron"
+    );
+
+    registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_coal_pieces",
+        new OreIngredient("oreIron"),
+        1,
+        Ingredient.fromStacks(ItemMaterial.EnumType.COAL_PIECES.asStack()),
+        2,
+        20 * 60 * 6,
+        12,
+        15,
+        0.25f,
+        "pyrotech:bloom_from_oreiron",
+        "tile.oreIron"
+    );
+
+    registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_charcoal_flakes",
+        new OreIngredient("oreIron"),
+        1,
+        Ingredient.fromStacks(ItemMaterial.EnumType.CHARCOAL_FLAKES.asStack()),
+        2,
+        20 * 60 * 6,
+        12,
+        15,
+        0.25f,
+        "pyrotech:bloom_from_oreiron",
+        "tile.oreIron"
+    );
+
+    registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_coal_coke",
+        new OreIngredient("oreIron"),
+        1,
+        new OreIngredient("fuelCoke"),
+        1,
+        20 * 60 * 5,
+        12,
+        15,
+        0.25f,
+        "pyrotech:bloom_from_oreiron",
+        "tile.oreIron"
+    );
   }
 
   public static void register(String name, ItemStack output, Ingredient input, int inputCount, int steps, ResourceLocation texture) {
@@ -107,6 +176,18 @@ public final class ModRecipes {
 
     ForgingTableRecipe recipe = new ForgingTableRecipe(output, input, inputCount, secondaryInput, secondaryInputCount, hits);
     FORGING_TABLE_RECIPES.register(recipe.setRegistryName(new ResourceLocation(Tags.MOD_ID, name)));
+  }
+
+  public static void registerPrimitiveBloomery(String name, ItemStack output, Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks) {
+
+    PrimitiveBloomeryRecipe recipe = new PrimitiveBloomeryRecipe(output, input, inputCount, fuel, fuelCount, burnTimeTicks);
+    PRIMITIVE_BLOOMERY_RECIPES.register(recipe.setRegistryName(new ResourceLocation(Tags.MOD_ID, name)));
+  }
+
+  public static void registerPrimitiveBloomeryBloom(String name, Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks, int bloomYieldMin, int bloomYieldMax, float experience, String bloomRecipeId, String bloomLangKey) {
+
+    PrimitiveBloomeryRecipe recipe = new PrimitiveBloomeryRecipe(input, inputCount, fuel, fuelCount, burnTimeTicks, bloomYieldMin, bloomYieldMax, experience, bloomRecipeId, bloomLangKey);
+    PRIMITIVE_BLOOMERY_RECIPES.register(recipe.setRegistryName(new ResourceLocation(Tags.MOD_ID, name)));
   }
 
   private ModRecipes() {

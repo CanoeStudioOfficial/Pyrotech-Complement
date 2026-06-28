@@ -6,6 +6,7 @@ import com.canoestudios.pyrotechcomplement.init.ModSounds;
 import com.canoestudios.pyrotechcomplement.proxy.CommonProxy;
 import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
+import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
@@ -64,6 +65,12 @@ public class PyrotechComplement {
         new RegistryBuilder<ForgingTableRecipe>()
             .setName(new ResourceLocation(Tags.MOD_ID, "forging_table_recipe"))
             .setType(ForgingTableRecipe.class)
+            .allowModification()
+            .create();
+
+        new RegistryBuilder<PrimitiveBloomeryRecipe>()
+            .setName(new ResourceLocation(Tags.MOD_ID, "primitive_bloomery_recipe"))
+            .setType(PrimitiveBloomeryRecipe.class)
             .allowModification()
             .create();
 

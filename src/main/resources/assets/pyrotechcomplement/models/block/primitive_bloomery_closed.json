@@ -1,0 +1,75 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "front": "pyrotech:blocks/bloomery_front",
+    "side": "pyrotech:blocks/bloomery_side",
+    "edge": "pyrotech:blocks/bloomery_top_side",
+    "inside": "pyrotech:blocks/bloomery_inside_side",
+    "top": "pyrotech:blocks/bloomery_top",
+    "bottom": "pyrotech:blocks/bloomery_bottom",
+    "particle": "pyrotech:blocks/bloomery_side"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 2],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#front"},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#inside"},
+        "east": {"uv": [0, 0, 2, 16], "texture": "#side"},
+        "west": {"uv": [0, 0, 2, 16], "texture": "#side"},
+        "up": {"uv": [0, 0, 16, 2], "texture": "#top"},
+        "down": {"uv": [0, 0, 16, 2], "texture": "#bottom"}
+      }
+    },
+    {
+      "from": [0, 0, 2],
+      "to": [2, 16, 8],
+      "faces": {
+        "east": {"uv": [2, 0, 8, 16], "texture": "#inside"},
+        "west": {"uv": [2, 0, 8, 16], "texture": "#side"},
+        "south": {"uv": [0, 0, 2, 16], "texture": "#edge"},
+        "up": {"uv": [0, 2, 2, 8], "texture": "#top"},
+        "down": {"uv": [0, 2, 2, 8], "texture": "#bottom"}
+      }
+    },
+    {
+      "from": [14, 0, 2],
+      "to": [16, 16, 8],
+      "faces": {
+        "east": {"uv": [2, 0, 8, 16], "texture": "#side"},
+        "west": {"uv": [2, 0, 8, 16], "texture": "#inside"},
+        "south": {"uv": [14, 0, 16, 16], "texture": "#edge"},
+        "up": {"uv": [14, 2, 16, 8], "texture": "#top"},
+        "down": {"uv": [14, 2, 16, 8], "texture": "#bottom"}
+      }
+    },
+    {
+      "from": [2, 12, 2],
+      "to": [14, 16, 8],
+      "faces": {
+        "north": {"uv": [2, 0, 14, 4], "texture": "#front"},
+        "south": {"uv": [2, 0, 14, 4], "texture": "#inside"},
+        "up": {"uv": [2, 2, 14, 8], "texture": "#top"},
+        "down": {"uv": [2, 2, 14, 8], "texture": "#inside"}
+      }
+    },
+    {
+      "from": [2, 0, 2],
+      "to": [14, 2, 8],
+      "faces": {
+        "north": {"uv": [2, 14, 14, 16], "texture": "#front"},
+        "south": {"uv": [2, 14, 14, 16], "texture": "#inside"},
+        "up": {"uv": [2, 2, 14, 8], "texture": "#inside"},
+        "down": {"uv": [2, 2, 14, 8], "texture": "#bottom"}
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [30, 225, 0],
+      "translation": [0, 0, 0],
+      "scale": [0.625, 0.625, 0.625]
+    }
+  }
+}
