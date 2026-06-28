@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "pyrotech:modules_enabled",
+      "include": ["module.tech.basic"]
+    }
+  ],
+  "pattern": [
+    "III",
+    " A ",
+    "SSS"
+  ],
+  "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "A": {
+      "item": "pyrotech:anvil_iron_plated"
+    },
+    "S": {
+      "item": "minecraft:stone_slab",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "pyrotechcomplement:forging_table_ironclad"
+  }
+}

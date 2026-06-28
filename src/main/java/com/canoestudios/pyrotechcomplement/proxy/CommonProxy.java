@@ -35,10 +35,12 @@ public class CommonProxy {
     try {
       Class<?> craftTweakerApi = Class.forName("crafttweaker.CraftTweakerAPI");
       Class<?> zenLoom = Class.forName("com.canoestudios.pyrotechcomplement.plugin.crafttweaker.ZenLoom");
+      Class<?> zenForgingTable = Class.forName("com.canoestudios.pyrotechcomplement.plugin.crafttweaker.ZenForgingTable");
       craftTweakerApi.getMethod("registerClass", Class.class).invoke(null, zenLoom);
-      PyrotechComplement.LOGGER.info("CraftTweaker detected; loom ZenScript API is available as mods.pyrotechcomplement.Loom");
+      craftTweakerApi.getMethod("registerClass", Class.class).invoke(null, zenForgingTable);
+      PyrotechComplement.LOGGER.info("CraftTweaker detected; ZenScript APIs are available for Pyrotech Complement");
     } catch (ReflectiveOperationException e) {
-      PyrotechComplement.LOGGER.error("Unable to register CraftTweaker loom integration", e);
+      PyrotechComplement.LOGGER.error("Unable to register CraftTweaker integrations", e);
     }
   }
 

@@ -1,0 +1,10 @@
+{
+  "parent": "pyrotechcomplement:block/forging_table",
+  "textures": {
+    "top": "minecraft:blocks/stone_granite_smooth",
+    "top_side": "minecraft:blocks/stone_granite_smooth",
+    "bottom_side": "minecraft:blocks/stone_slab_side",
+    "bottom": "minecraft:blocks/stone_slab_top",
+    "particle": "minecraft:blocks/stone_granite_smooth"
+  }
+}

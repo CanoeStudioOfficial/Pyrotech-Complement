@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "pyrotech:modules_enabled",
+      "include": ["module.tech.basic"]
+    }
+  ],
+  "pattern": [
+    "III",
+    " A ",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "A": {
+      "item": "pyrotech:anvil_obsidian"
+    }
+  },
+  "result": {
+    "item": "pyrotechcomplement:forging_table_obsidian"
+  }
+}

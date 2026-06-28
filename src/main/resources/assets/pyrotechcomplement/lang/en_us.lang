@@ -1,4 +1,7 @@
 tile.pyrotechcomplement.crude_loom.name=Crude Loom
 tile.pyrotechcomplement.loom.name=Loom
+tile.pyrotechcomplement.forging_table_granite.name=Granite Forging Table
+tile.pyrotechcomplement.forging_table_obsidian.name=Obsidian Forging Table
+tile.pyrotechcomplement.forging_table_ironclad.name=Ironclad Forging Table
 itemGroup.pyrotechcomplement=Pyrotech Complement
 gui.pyrotechcomplement.jei.category.loom=Loom

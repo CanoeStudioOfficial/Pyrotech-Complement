@@ -1,5 +1,6 @@
 package com.canoestudios.pyrotechcomplement.plugin.top;
 
+import com.canoestudios.pyrotechcomplement.plugin.top.provider.ForgingTableProvider;
 import com.canoestudios.pyrotechcomplement.plugin.top.provider.LoomProvider;
 import mcjty.theoneprobe.api.ITheOneProbe;
 
@@ -15,6 +16,7 @@ public class PluginTOP {
     public Void apply(ITheOneProbe top) {
 
       top.registerProvider(new LoomProvider());
+      top.registerProvider(new ForgingTableProvider());
       return null;
     }
   }

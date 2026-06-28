@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "pyrotechcomplement:forging_table",
+    "textures": {
+      "top": "minecraft:blocks/iron_block",
+      "top_side": "minecraft:blocks/iron_block",
+      "bottom_side": "minecraft:blocks/stone_slab_side",
+      "bottom": "minecraft:blocks/stone_slab_top",
+      "particle": "minecraft:blocks/iron_block"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": { "y": 0 },
+      "east": { "y": 90 },
+      "south": { "y": 180 },
+      "west": { "y": 270 }
+    }
+  }
+}

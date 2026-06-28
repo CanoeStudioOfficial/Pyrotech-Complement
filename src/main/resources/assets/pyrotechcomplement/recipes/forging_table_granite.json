@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "pyrotech:modules_enabled",
+      "include": ["module.tech.basic"]
+    }
+  ],
+  "pattern": [
+    "A",
+    "S"
+  ],
+  "key": {
+    "A": {
+      "item": "pyrotech:anvil_granite"
+    },
+    "S": {
+      "item": "minecraft:stone_slab",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "pyrotechcomplement:forging_table_granite"
+  }
+}
