@@ -13,7 +13,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -60,13 +59,6 @@ public class BlockForgingTable
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 
     return state.getValue(FACING).getAxis() == EnumFacing.Axis.Z ? SHAPE_Z : SHAPE_X;
-  }
-
-  @Nonnull
-  @Override
-  public BlockRenderLayer getRenderLayer() {
-
-    return BlockRenderLayer.CUTOUT;
   }
 
   @Override
