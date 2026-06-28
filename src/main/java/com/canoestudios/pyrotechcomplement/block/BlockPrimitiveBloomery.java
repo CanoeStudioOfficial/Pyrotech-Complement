@@ -19,7 +19,6 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -88,13 +87,6 @@ public class BlockPrimitiveBloomery
   public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
 
     return state.getValue(LIT) ? 12 : 0;
-  }
-
-  @Nonnull
-  @Override
-  public BlockRenderLayer getRenderLayer() {
-
-    return BlockRenderLayer.CUTOUT;
   }
 
   @Override
