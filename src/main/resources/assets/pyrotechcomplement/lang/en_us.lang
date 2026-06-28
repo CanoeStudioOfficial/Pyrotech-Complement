@@ -12,3 +12,4 @@ gui.pyrotechcomplement.jei.category.primitive_bloomery=Primitive Bloomery
 gui.pyrotechcomplement.top.primitive_bloomery.unformed=Structure incomplete
 gui.pyrotechcomplement.top.primitive_bloomery.capacity=Capacity: %d / %d
 gui.pyrotechcomplement.top.primitive_bloomery.time=Time: %s / %s
+gui.pyrotechcomplement.top.primitive_bloomery.airflow=Airflow: +%d%%

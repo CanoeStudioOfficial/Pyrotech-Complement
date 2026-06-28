@@ -1,6 +1,7 @@
 package com.canoestudios.pyrotechcomplement;
 
 import com.canoestudios.pyrotechcomplement.init.ModBlocks;
+import com.canoestudios.pyrotechcomplement.init.ModOreDict;
 import com.canoestudios.pyrotechcomplement.init.ModRecipes;
 import com.canoestudios.pyrotechcomplement.init.ModSounds;
 import com.canoestudios.pyrotechcomplement.proxy.CommonProxy;
@@ -85,6 +86,7 @@ public class PyrotechComplement {
     @SubscribeEvent
     public static void onRegisterItems(RegistryEvent.Register<Item> event) {
         ModBlocks.registerItems(event.getRegistry());
+        ModOreDict.register();
     }
 
     @SubscribeEvent

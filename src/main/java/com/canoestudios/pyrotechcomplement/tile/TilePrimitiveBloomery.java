@@ -4,7 +4,11 @@ import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomery;
 import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomeryMolten;
 import com.canoestudios.pyrotechcomplement.init.ModBlocks;
 import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
+import com.codetaylor.mc.athenaeum.util.MathConstants;
+import com.codetaylor.mc.pyrotech.IAirflowConsumerCapability;
 import com.codetaylor.mc.athenaeum.spi.TileEntityBase;
+import com.codetaylor.mc.pyrotech.modules.core.ModuleCore;
+import com.codetaylor.mc.pyrotech.modules.tech.bloomery.ModuleTechBloomeryConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -21,17 +25,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
 public class TilePrimitiveBloomery
     extends TileEntityBase
-    implements ITickable {
+    implements ITickable, IAirflowConsumerCapability {
 
   private static final int SLOT_INPUT = 0;
   private static final int SLOT_FUEL = 1;
@@ -63,13 +69,16 @@ public class TilePrimitiveBloomery
   private PrimitiveBloomeryRecipe recipe;
   private int progress;
   private int burnTimeTicks;
+  private float airflowBonus;
 
   @Override
   public void update() {
 
-    if (this.world == null || this.world.isRemote || this.world.getTotalWorldTime() % 20 != 0) {
+    if (this.world == null || this.world.isRemote) {
       return;
     }
+
+    this.updateAirflowBonus();
 
     IBlockState state = this.world.getBlockState(this.pos);
     if (!(state.getBlock() instanceof BlockPrimitiveBloomery)) {
@@ -78,13 +87,16 @@ public class TilePrimitiveBloomery
 
     if (state.getValue(BlockPrimitiveBloomery.LIT)) {
       this.updateLit(state);
-    } else {
+
+    } else if (this.world.getTotalWorldTime() % 20 == 0) {
       this.collectItemsFromWorld();
     }
 
-    IBlockState updatedState = this.world.getBlockState(this.pos);
-    this.updateMoltenBlocks(updatedState.getBlock() instanceof BlockPrimitiveBloomery
-        && updatedState.getValue(BlockPrimitiveBloomery.LIT));
+    if (this.world.getTotalWorldTime() % 20 == 0) {
+      IBlockState updatedState = this.world.getBlockState(this.pos);
+      this.updateMoltenBlocks(updatedState.getBlock() instanceof BlockPrimitiveBloomery
+          && updatedState.getValue(BlockPrimitiveBloomery.LIT));
+    }
   }
 
   public boolean onRightClick(EntityPlayer player, EnumHand hand) {
@@ -181,11 +193,12 @@ public class TilePrimitiveBloomery
       return;
     }
 
-    this.progress += 20;
+    this.progress += this.getProgressIncrementTicks();
 
     if (this.progress >= this.burnTimeTicks) {
       this.completeRecipe(state);
-    } else {
+
+    } else if (this.world.getTotalWorldTime() % 20 == 0) {
       this.notifyBlockUpdate();
     }
   }
@@ -225,6 +238,7 @@ public class TilePrimitiveBloomery
 
     this.progress = 0;
     this.burnTimeTicks = 0;
+    this.airflowBonus = 0;
     this.world.setBlockState(this.pos, state.withProperty(BlockPrimitiveBloomery.LIT, false), 3);
     this.updateMoltenBlocks(false);
     this.notifyBlockUpdate();
@@ -580,6 +594,48 @@ public class TilePrimitiveBloomery
     return this.burnTimeTicks;
   }
 
+  public float getAirflowBonus() {
+
+    return this.airflowBonus;
+  }
+
+  private int getProgressIncrementTicks() {
+
+    int increment = 1;
+    int wholeBonus = (int) this.airflowBonus;
+    increment += wholeBonus;
+
+    float partialBonus = this.airflowBonus - wholeBonus;
+    if (partialBonus > 0 && this.world.rand.nextFloat() < partialBonus) {
+      increment += 1;
+    }
+
+    return increment;
+  }
+
+  private void updateAirflowBonus() {
+
+    if (this.airflowBonus <= 0) {
+      return;
+    }
+
+    this.airflowBonus -= this.airflowBonus * this.getAirflowDragModifier();
+
+    if (this.airflowBonus < MathConstants.FLT_EPSILON) {
+      this.airflowBonus = 0;
+    }
+  }
+
+  private float getAirflowModifier() {
+
+    return (float) ModuleTechBloomeryConfig.BLOOMERY.AIRFLOW_MODIFIER;
+  }
+
+  private float getAirflowDragModifier() {
+
+    return (float) ModuleTechBloomeryConfig.BLOOMERY.AIRFLOW_DRAG_MODIFIER;
+  }
+
   public ItemStack getInput() {
 
     return this.inventory.getStackInSlot(SLOT_INPUT);
@@ -599,6 +655,7 @@ public class TilePrimitiveBloomery
 
     this.progress = 0;
     this.burnTimeTicks = 0;
+    this.airflowBonus = 0;
     this.recipe = null;
     this.notifyBlockUpdate();
   }
@@ -644,6 +701,7 @@ public class TilePrimitiveBloomery
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setInteger("progress", this.progress);
     compound.setInteger("burnTimeTicks", this.burnTimeTicks);
+    compound.setFloat("airflowBonus", this.airflowBonus);
     return compound;
   }
 
@@ -654,7 +712,40 @@ public class TilePrimitiveBloomery
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.progress = compound.getInteger("progress");
     this.burnTimeTicks = compound.getInteger("burnTimeTicks");
+    this.airflowBonus = compound.getFloat("airflowBonus");
     this.updateCachedRecipe();
+  }
+
+  @Override
+  public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+
+    if (capability == ModuleCore.CAPABILITY_AIRFLOW_CONSUMER) {
+      return true;
+    }
+
+    return super.hasCapability(capability, facing);
+  }
+
+  @Nullable
+  @Override
+  public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+
+    if (capability == ModuleCore.CAPABILITY_AIRFLOW_CONSUMER) {
+      //noinspection unchecked
+      return (T) this;
+    }
+
+    return super.getCapability(capability, facing);
+  }
+
+  @Override
+  public float consumeAirflow(float airflow, boolean simulate) {
+
+    if (!simulate && airflow > 0) {
+      this.airflowBonus += airflow * this.getAirflowModifier();
+    }
+
+    return 0;
   }
 
   @Override

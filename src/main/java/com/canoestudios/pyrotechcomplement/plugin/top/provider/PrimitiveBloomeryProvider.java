@@ -73,6 +73,13 @@ public class PrimitiveBloomeryProvider
           StringHelper.ticksToHMS(tile.getProgress()),
           StringHelper.ticksToHMS(tile.getBurnTimeTicks())
       ));
+
+      if (tile.getAirflowBonus() > 0) {
+        probeInfo.text(I18n.translateToLocalFormatted(
+            "gui." + Tags.MOD_ID + ".top.primitive_bloomery.airflow",
+            (int) (tile.getAirflowBonus() * 100)
+        ));
+      }
     }
   }
 }
