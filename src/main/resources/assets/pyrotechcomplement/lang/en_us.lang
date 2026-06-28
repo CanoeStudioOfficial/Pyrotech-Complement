@@ -5,3 +5,4 @@ tile.pyrotechcomplement.forging_table_obsidian.name=Obsidian Forging Table
 tile.pyrotechcomplement.forging_table_ironclad.name=Ironclad Forging Table
 itemGroup.pyrotechcomplement=Pyrotech Complement
 gui.pyrotechcomplement.jei.category.loom=Loom
+gui.pyrotechcomplement.jei.category.forging_table=Forging Table

@@ -5,3 +5,4 @@ tile.pyrotechcomplement.forging_table_obsidian.name=黑曜石锻造台
 tile.pyrotechcomplement.forging_table_ironclad.name=复合锻造台
 itemGroup.pyrotechcomplement=火种科技 补充
 gui.pyrotechcomplement.jei.category.loom=织机
+gui.pyrotechcomplement.jei.category.forging_table=锻造台

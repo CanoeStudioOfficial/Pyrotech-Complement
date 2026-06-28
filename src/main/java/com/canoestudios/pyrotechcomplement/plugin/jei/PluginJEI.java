@@ -2,8 +2,11 @@ package com.canoestudios.pyrotechcomplement.plugin.jei;
 
 import com.canoestudios.pyrotechcomplement.init.ModBlocks;
 import com.canoestudios.pyrotechcomplement.init.ModRecipes;
+import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryForgingTable;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryLoom;
+import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperForgingTable;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperLoom;
+import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
@@ -25,7 +28,10 @@ public class PluginJEI
     IJeiHelpers jeiHelpers = registry.getJeiHelpers();
     IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 
-    registry.addRecipeCategories(new JEIRecipeCategoryLoom(guiHelper));
+    registry.addRecipeCategories(
+        new JEIRecipeCategoryLoom(guiHelper),
+        new JEIRecipeCategoryForgingTable(guiHelper)
+    );
   }
 
   @Override
@@ -35,6 +41,12 @@ public class PluginJEI
     registry.addRecipeCatalyst(new ItemStack(ModBlocks.LOOM), JEIRecipeCategoryLoom.UID);
     registry.handleRecipes(LoomRecipe.class, JEIRecipeWrapperLoom::new, JEIRecipeCategoryLoom.UID);
     registry.addRecipes(this.getLoomRecipes(), JEIRecipeCategoryLoom.UID);
+
+    registry.addRecipeCatalyst(new ItemStack(ModBlocks.FORGING_TABLE_GRANITE), JEIRecipeCategoryForgingTable.UID);
+    registry.addRecipeCatalyst(new ItemStack(ModBlocks.FORGING_TABLE_OBSIDIAN), JEIRecipeCategoryForgingTable.UID);
+    registry.addRecipeCatalyst(new ItemStack(ModBlocks.FORGING_TABLE_IRONCLAD), JEIRecipeCategoryForgingTable.UID);
+    registry.handleRecipes(ForgingTableRecipe.class, JEIRecipeWrapperForgingTable::new, JEIRecipeCategoryForgingTable.UID);
+    registry.addRecipes(this.getForgingTableRecipes(), JEIRecipeCategoryForgingTable.UID);
   }
 
   private List<LoomRecipe> getLoomRecipes() {
@@ -48,5 +60,18 @@ public class PluginJEI
     }
 
     return new ArrayList<>(ModRecipes.LOOM_RECIPES.getValuesCollection());
+  }
+
+  private List<ForgingTableRecipe> getForgingTableRecipes() {
+
+    if (ModRecipes.FORGING_TABLE_RECIPES == null) {
+      ModRecipes.initRegistry();
+    }
+
+    if (ModRecipes.FORGING_TABLE_RECIPES == null) {
+      return Collections.emptyList();
+    }
+
+    return new ArrayList<>(ModRecipes.FORGING_TABLE_RECIPES.getValuesCollection());
   }
 }
