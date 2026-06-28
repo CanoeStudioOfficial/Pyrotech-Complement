@@ -3,7 +3,7 @@ package com.canoestudios.pyrotechcomplement.block;
 import com.canoestudios.pyrotechcomplement.Tags;
 import com.canoestudios.pyrotechcomplement.init.ModCreativeTabs;
 import com.canoestudios.pyrotechcomplement.tile.TileLoom;
-import net.minecraft.block.Block;
+import com.codetaylor.mc.athenaeum.spi.BlockPartialBase;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -25,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BlockLoom
-    extends Block
+    extends BlockPartialBase
     implements ITileEntityProvider {
 
   public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -48,6 +49,7 @@ public class BlockLoom
     this.setResistance(5.0f);
     this.setSoundType(SoundType.WOOD);
     this.setHarvestLevel("axe", 0);
+    this.setLightOpacity(0);
     this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
   }
 
@@ -76,6 +78,13 @@ public class BlockLoom
       default:
         return SHAPE_NORTH;
     }
+  }
+
+  @Nonnull
+  @Override
+  public BlockRenderLayer getRenderLayer() {
+
+    return BlockRenderLayer.CUTOUT;
   }
 
   @Override
