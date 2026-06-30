@@ -29,7 +29,7 @@ public class JEIRecipeWrapperPrimitiveBloomery
     this.registryName = recipe.getRegistryName();
     this.inputStacks = this.getInputStacks(recipe.getInput(), recipe.getInputCount());
     this.fuelStacks = this.getInputStacks(recipe.getFuel(), recipe.getFuelCount());
-    this.output = recipe.getOutput();
+    this.output = recipe.getPrimitiveBloomeryOutput();
     this.burnTimeTicks = recipe.getBurnTimeTicks();
 
     this.inputs = new ArrayList<>();

@@ -223,7 +223,7 @@ public class TilePrimitiveBloomery
     fuel.shrink(this.recipe.getFuelCount() * batches);
     this.inventory.setStackInSlot(SLOT_INPUT, input.isEmpty() ? ItemStack.EMPTY : input);
     this.inventory.setStackInSlot(SLOT_FUEL, fuel.isEmpty() ? ItemStack.EMPTY : fuel);
-    this.inventory.setStackInSlot(SLOT_OUTPUT, this.recipe.getOutput(batches, this.world.rand));
+    this.inventory.setStackInSlot(SLOT_OUTPUT, this.recipe.getPrimitiveBloomeryOutput(batches, this.world.rand));
     this.clearMoltenBlocks();
 
     this.progress = 0;

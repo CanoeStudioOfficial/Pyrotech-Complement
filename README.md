@@ -173,6 +173,26 @@ mods.pyrotechcomplement.PrimitiveBloomery.addRecipe(
     int burnTimeTicks
 );
 
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+    string name,
+    IItemStack output,
+    IIngredient input
+);
+
+builder.setInputCount(int inputCount);
+builder.setFuel(IIngredient fuel, @Optional int fuelCount);
+builder.setBurnTimeTicks(int burnTimeTicks);
+builder.setExperience(float experience);
+builder.setFailureChance(float failureChance);
+builder.setBloomYield(int min, int max);
+builder.setSlagItem(IItemStack slagItem, int slagCount);
+builder.addFailureItem(IItemStack itemStack, int weight);
+builder.setLangKey(string langKey);
+builder.setAnvilTiers(string[] tiers);
+builder.register();
+
+// Legacy compatibility method. bloomRecipeId is only used to read the Pyrotech
+// recipe output; new blooms store this mod's CraftTweaker recipe id in NBT.
 mods.pyrotechcomplement.PrimitiveBloomery.addBloomRecipe(
     string name,
     IIngredient input,
@@ -194,20 +214,22 @@ mods.pyrotechcomplement.PrimitiveBloomery.removeAllRecipes();
 Example:
 
 ```zenscript
-// 1 oreIron + 1 coal -> a Pyrotech bloom after 6 minutes.
-mods.pyrotechcomplement.PrimitiveBloomery.addBloomRecipe(
-    "iron_bloom_from_ore_and_coal",
-    <ore:oreIron>,
-    1,
-    <ore:coal>,
-    1,
-    20 * 60 * 6,
-    12,
-    15,
-    0.25,
-    "pyrotech:bloom_from_oreiron",
-    "tile.oreIron"
-);
+// 1 oreIron + 1 coal -> a Pyrotech bloom after 24 minutes.
+// The bloom stores recipeId "crafttweaker:bloom_from_iron_ore" in NBT.
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+        "bloom_from_iron_ore",
+        <minecraft:iron_nugget>,
+        <ore:oreIron>
+    )
+    .setFuel(<ore:coal>, 1)
+    .setAnvilTiers(["granite", "ironclad"])
+    .setBurnTimeTicks(28800)
+    .setFailureChance(0.25)
+    .setBloomYield(12, 15)
+    .setSlagItem(<pyrotech:slag>, 4)
+    .addFailureItem(<pyrotech:slag>, 2)
+    .setLangKey("tile.oreIron")
+    .register();
 ```
 
 ## JEI and TOP

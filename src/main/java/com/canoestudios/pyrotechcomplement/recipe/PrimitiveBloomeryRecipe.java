@@ -1,21 +1,19 @@
 package com.canoestudios.pyrotechcomplement.recipe;
 
 import com.canoestudios.pyrotechcomplement.init.ModRecipes;
-import com.codetaylor.mc.athenaeum.recipe.IRecipeSingleOutput;
-import com.codetaylor.mc.athenaeum.util.RecipeHelper;
-import com.codetaylor.mc.pyrotech.modules.tech.bloomery.ModuleTechBloomery;
-import com.codetaylor.mc.pyrotech.modules.tech.bloomery.util.BloomHelper;
+import com.codetaylor.mc.pyrotech.modules.tech.basic.recipe.AnvilRecipe;
+import com.codetaylor.mc.pyrotech.modules.tech.bloomery.recipe.BloomeryRecipeBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class PrimitiveBloomeryRecipe
-    extends IForgeRegistryEntry.Impl<PrimitiveBloomeryRecipe>
-    implements IRecipeSingleOutput {
+    extends BloomeryRecipeBase<PrimitiveBloomeryRecipe> {
 
   @Nullable
   public static PrimitiveBloomeryRecipe getRecipe(ItemStack input, ItemStack fuel) {
@@ -67,48 +65,102 @@ public class PrimitiveBloomeryRecipe
 
   public static boolean removeRecipes(Ingredient output) {
 
-    return RecipeHelper.removeRecipesByOutput(ModRecipes.PRIMITIVE_BLOOMERY_RECIPES, output);
+    if (ModRecipes.PRIMITIVE_BLOOMERY_RECIPES == null) {
+      return false;
+    }
+
+    List<ResourceLocation> toRemove = new ArrayList<>();
+
+    for (PrimitiveBloomeryRecipe recipe : ModRecipes.PRIMITIVE_BLOOMERY_RECIPES) {
+      if (output.apply(recipe.getOutput())) {
+        ResourceLocation registryName = recipe.getRegistryName();
+
+        if (registryName != null) {
+          toRemove.add(registryName);
+        }
+      }
+    }
+
+    for (ResourceLocation registryName : toRemove) {
+      ModRecipes.PRIMITIVE_BLOOMERY_RECIPES.remove(registryName);
+      ModRecipes.removePrimitiveBloomeryAnvilRecipe(registryName);
+    }
+
+    return !toRemove.isEmpty();
   }
 
-  private final ItemStack output;
-  private final Ingredient input;
+  private static final AnvilRecipe.EnumTier[] DEFAULT_ANVIL_TIERS = AnvilRecipe.EnumTier.values();
+  private static final FailureItem[] EMPTY_FAILURE_ITEMS = new FailureItem[0];
+
   private final int inputCount;
   private final Ingredient fuel;
   private final int fuelCount;
-  private final int burnTimeTicks;
   private final boolean generatedBloomOutput;
-  private final int bloomYieldMin;
-  private final int bloomYieldMax;
-  private final float experience;
-  @Nullable
-  private final String bloomRecipeId;
-  @Nullable
-  private final String bloomLangKey;
 
   public PrimitiveBloomeryRecipe(ItemStack output, Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks) {
 
-    this(output, input, inputCount, fuel, fuelCount, burnTimeTicks, false, 0, 0, 0, null, null);
+    this(output, input, inputCount, fuel, fuelCount, burnTimeTicks, false, 0, 0, 0, 0, 0, ItemStack.EMPTY, EMPTY_FAILURE_ITEMS, DEFAULT_ANVIL_TIERS, null);
   }
 
-  public PrimitiveBloomeryRecipe(Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks, int bloomYieldMin, int bloomYieldMax, float experience, @Nullable String bloomRecipeId, @Nullable String bloomLangKey) {
+  public PrimitiveBloomeryRecipe(
+      ItemStack output,
+      Ingredient input,
+      int inputCount,
+      Ingredient fuel,
+      int fuelCount,
+      int burnTimeTicks,
+      int bloomYieldMin,
+      int bloomYieldMax,
+      float experience,
+      float failureChance,
+      int slagCount,
+      ItemStack slagItem,
+      FailureItem[] failureItems,
+      AnvilRecipe.EnumTier[] anvilTiers,
+      @Nullable String langKey
+  ) {
 
-    this(ItemStack.EMPTY, input, inputCount, fuel, fuelCount, burnTimeTicks, true, bloomYieldMin, bloomYieldMax, experience, bloomRecipeId, bloomLangKey);
+    this(output, input, inputCount, fuel, fuelCount, burnTimeTicks, true, bloomYieldMin, bloomYieldMax, experience, failureChance, slagCount, slagItem, failureItems, anvilTiers, langKey);
   }
 
-  private PrimitiveBloomeryRecipe(ItemStack output, Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks, boolean generatedBloomOutput, int bloomYieldMin, int bloomYieldMax, float experience, @Nullable String bloomRecipeId, @Nullable String bloomLangKey) {
+  private PrimitiveBloomeryRecipe(
+      ItemStack output,
+      Ingredient input,
+      int inputCount,
+      Ingredient fuel,
+      int fuelCount,
+      int burnTimeTicks,
+      boolean generatedBloomOutput,
+      int bloomYieldMin,
+      int bloomYieldMax,
+      float experience,
+      float failureChance,
+      int slagCount,
+      ItemStack slagItem,
+      FailureItem[] failureItems,
+      AnvilRecipe.EnumTier[] anvilTiers,
+      @Nullable String langKey
+  ) {
 
-    this.output = output.copy();
-    this.input = input;
+    super(
+        input,
+        output,
+        Math.max(20, burnTimeTicks),
+        Math.max(0, experience),
+        failureChance,
+        generatedBloomOutput ? Math.max(1, Math.min(bloomYieldMin, bloomYieldMax)) : 0,
+        generatedBloomOutput ? Math.max(Math.max(1, Math.min(bloomYieldMin, bloomYieldMax)), bloomYieldMax) : 0,
+        Math.max(0, slagCount),
+        failureItems,
+        slagItem,
+        anvilTiers,
+        langKey
+    );
+
     this.inputCount = Math.max(1, inputCount);
     this.fuel = fuel;
     this.fuelCount = Math.max(1, fuelCount);
-    this.burnTimeTicks = Math.max(20, burnTimeTicks);
     this.generatedBloomOutput = generatedBloomOutput;
-    this.bloomYieldMin = Math.max(1, Math.min(bloomYieldMin, bloomYieldMax));
-    this.bloomYieldMax = Math.max(this.bloomYieldMin, bloomYieldMax);
-    this.experience = Math.max(0, experience);
-    this.bloomRecipeId = bloomRecipeId;
-    this.bloomLangKey = bloomLangKey;
   }
 
   public boolean matches(ItemStack input, ItemStack fuel) {
@@ -142,6 +194,7 @@ public class PrimitiveBloomeryRecipe
     return Math.min(input.getCount() / this.inputCount, fuel.getCount() / this.fuelCount);
   }
 
+  @Override
   public Ingredient getInput() {
 
     return this.input;
@@ -172,76 +225,39 @@ public class PrimitiveBloomeryRecipe
     return this.generatedBloomOutput;
   }
 
-  public int getBloomYieldMin() {
-
-    return this.bloomYieldMin;
-  }
-
-  public int getBloomYieldMax() {
-
-    return this.bloomYieldMax;
-  }
-
-  public float getExperience() {
-
-    return this.experience;
-  }
-
   @Nullable
   public String getBloomRecipeId() {
 
-    return this.bloomRecipeId;
+    ResourceLocation registryName = this.getRegistryName();
+    return registryName == null ? null : registryName.toString();
   }
 
   @Nullable
   public String getBloomLangKey() {
 
-    return this.bloomLangKey;
+    return this.getLangKey();
   }
 
-  public ItemStack getOutput(int batches, @Nullable Random random) {
+  public ItemStack getPrimitiveBloomeryOutput(int batches, @Nullable Random random) {
 
     int batchCount = Math.max(1, batches);
 
     if (this.generatedBloomOutput) {
-      return this.createBloomOutput(batchCount, random);
+      return this.getUniqueBloomFromOutput(batchCount);
     }
 
-    ItemStack result = this.output.copy();
+    ItemStack result = this.getOutput();
     int count = Math.max(1, result.getCount() * batchCount);
     result.setCount(Math.min(result.getMaxStackSize(), count));
     return result;
   }
 
-  @Override
-  public ItemStack getOutput() {
+  public ItemStack getPrimitiveBloomeryOutput() {
 
-    return this.getOutput(1, null);
-  }
-
-  private ItemStack createBloomOutput(int batches, @Nullable Random random) {
-
-    if (ModuleTechBloomery.Blocks.BLOOM == null) {
-      return ItemStack.EMPTY;
+    if (this.generatedBloomOutput) {
+      return this.getOutputBloom();
     }
 
-    int maxIntegrity = this.bloomYieldMax * batches;
-    int integrity = 0;
-
-    for (int i = 0; i < batches; i++) {
-      if (random == null || this.bloomYieldMin == this.bloomYieldMax) {
-        integrity += this.bloomYieldMax;
-      } else {
-        integrity += this.bloomYieldMin + random.nextInt(this.bloomYieldMax - this.bloomYieldMin + 1);
-      }
-    }
-
-    String recipeId = this.bloomRecipeId;
-    ResourceLocation registryName = this.getRegistryName();
-    if (recipeId == null && registryName != null) {
-      recipeId = registryName.toString();
-    }
-
-    return BloomHelper.createBloomAsItemStack(new ItemStack(ModuleTechBloomery.Blocks.BLOOM), maxIntegrity, integrity, this.experience * batches, recipeId, this.bloomLangKey);
+    return this.getOutput();
   }
 }

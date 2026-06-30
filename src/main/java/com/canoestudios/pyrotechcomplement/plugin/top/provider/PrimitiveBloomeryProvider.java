@@ -67,7 +67,7 @@ public class PrimitiveBloomeryProvider
     PrimitiveBloomeryRecipe recipe = tile.getRecipe();
     if (recipe != null && tile.getBurnTimeTicks() > 0) {
       horizontal.progress(tile.getProgress(), tile.getBurnTimeTicks(), new ProgressStyle().height(18).width(64).showText(false));
-      horizontal.item(recipe.getOutput());
+      horizontal.item(recipe.getPrimitiveBloomeryOutput());
       probeInfo.text(I18n.translateToLocalFormatted(
           "gui." + Tags.MOD_ID + ".top.primitive_bloomery.time",
           StringHelper.ticksToHMS(tile.getProgress()),

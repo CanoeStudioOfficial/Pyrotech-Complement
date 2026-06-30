@@ -173,6 +173,26 @@ mods.pyrotechcomplement.PrimitiveBloomery.addRecipe(
     int burnTimeTicks
 );
 
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+    string name,
+    IItemStack output,
+    IIngredient input
+);
+
+builder.setInputCount(int inputCount);
+builder.setFuel(IIngredient fuel, @Optional int fuelCount);
+builder.setBurnTimeTicks(int burnTimeTicks);
+builder.setExperience(float experience);
+builder.setFailureChance(float failureChance);
+builder.setBloomYield(int min, int max);
+builder.setSlagItem(IItemStack slagItem, int slagCount);
+builder.addFailureItem(IItemStack itemStack, int weight);
+builder.setLangKey(string langKey);
+builder.setAnvilTiers(string[] tiers);
+builder.register();
+
+// 旧版兼容方法。bloomRecipeId 只用于读取 Pyrotech 配方的最终产物；
+// 新生成的铁坯 NBT 会写入本模组的 CraftTweaker 配方 id。
 mods.pyrotechcomplement.PrimitiveBloomery.addBloomRecipe(
     string name,
     IIngredient input,
@@ -194,20 +214,22 @@ mods.pyrotechcomplement.PrimitiveBloomery.removeAllRecipes();
 铁坯配方示例：
 
 ```zenscript
-// 1 个矿辞铁矿 + 1 个矿辞煤 -> Pyrotech 铁坯，需要 6 分钟。
-mods.pyrotechcomplement.PrimitiveBloomery.addBloomRecipe(
-    "iron_bloom_from_ore_and_coal",
-    <ore:oreIron>,
-    1,
-    <ore:coal>,
-    1,
-    20 * 60 * 6,
-    12,
-    15,
-    0.25,
-    "pyrotech:bloom_from_oreiron",
-    "tile.oreIron"
-);
+// 1 个矿辞铁矿 + 1 个矿辞煤 -> Pyrotech 铁坯，需要 24 分钟。
+// 铁坯 NBT 中的 recipeId 会是 "crafttweaker:bloom_from_iron_ore"。
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+        "bloom_from_iron_ore",
+        <minecraft:iron_nugget>,
+        <ore:oreIron>
+    )
+    .setFuel(<ore:coal>, 1)
+    .setAnvilTiers(["granite", "ironclad"])
+    .setBurnTimeTicks(28800)
+    .setFailureChance(0.25)
+    .setBloomYield(12, 15)
+    .setSlagItem(<pyrotech:slag>, 4)
+    .addFailureItem(<pyrotech:slag>, 2)
+    .setLangKey("tile.oreIron")
+    .register();
 ```
 
 ## JEI 和 TOP

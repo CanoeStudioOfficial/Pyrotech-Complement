@@ -6,6 +6,12 @@ import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
 import com.codetaylor.mc.pyrotech.modules.core.ModuleCore;
 import com.codetaylor.mc.pyrotech.modules.core.item.ItemMaterial;
+import com.codetaylor.mc.pyrotech.modules.tech.basic.ModuleTechBasic;
+import com.codetaylor.mc.pyrotech.modules.tech.basic.recipe.AnvilRecipe;
+import com.codetaylor.mc.pyrotech.modules.tech.bloomery.ModuleTechBloomery;
+import com.codetaylor.mc.pyrotech.modules.tech.bloomery.ModuleTechBloomeryConfig;
+import com.codetaylor.mc.pyrotech.modules.tech.bloomery.recipe.BloomAnvilRecipe;
+import com.codetaylor.mc.pyrotech.modules.tech.bloomery.recipe.BloomeryRecipeBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -16,6 +22,12 @@ import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 
 public final class ModRecipes {
+
+  private static final int DEFAULT_BLOOMERY_BURN_TIME_TICKS = 24 * 60 * 20;
+  private static final float DEFAULT_BLOOMERY_FAILURE_CHANCE = 0.25f;
+  private static final float DEFAULT_BLOOMERY_EXPERIENCE = 0.25f;
+  private static final int DEFAULT_BLOOMERY_BLOOM_YIELD_MIN = 12;
+  private static final int DEFAULT_BLOOMERY_BLOOM_YIELD_MAX = 15;
 
   public static IForgeRegistryModifiable<LoomRecipe> LOOM_RECIPES;
   public static IForgeRegistryModifiable<ForgingTableRecipe> FORGING_TABLE_RECIPES;
@@ -90,67 +102,72 @@ public final class ModRecipes {
     );
 
     registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_coal",
+        new ItemStack(Items.IRON_NUGGET),
         new OreIngredient("oreIron"),
         1,
         new OreIngredient("coal"),
         1,
-        20 * 60 * 6,
-        12,
-        15,
-        0.25f,
-        "pyrotech:bloom_from_oreiron",
+        DEFAULT_BLOOMERY_BURN_TIME_TICKS,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MIN,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MAX,
+        DEFAULT_BLOOMERY_EXPERIENCE,
+        DEFAULT_BLOOMERY_FAILURE_CHANCE,
         "tile.oreIron"
     );
 
     registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_charcoal",
+        new ItemStack(Items.IRON_NUGGET),
         new OreIngredient("oreIron"),
         1,
         Ingredient.fromStacks(new ItemStack(Items.COAL, 1, 1)),
         1,
-        20 * 60 * 6,
-        12,
-        15,
-        0.25f,
-        "pyrotech:bloom_from_oreiron",
+        DEFAULT_BLOOMERY_BURN_TIME_TICKS,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MIN,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MAX,
+        DEFAULT_BLOOMERY_EXPERIENCE,
+        DEFAULT_BLOOMERY_FAILURE_CHANCE,
         "tile.oreIron"
     );
 
     registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_coal_pieces",
+        new ItemStack(Items.IRON_NUGGET),
         new OreIngredient("oreIron"),
         1,
         Ingredient.fromStacks(ItemMaterial.EnumType.COAL_PIECES.asStack()),
         2,
-        20 * 60 * 6,
-        12,
-        15,
-        0.25f,
-        "pyrotech:bloom_from_oreiron",
+        DEFAULT_BLOOMERY_BURN_TIME_TICKS,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MIN,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MAX,
+        DEFAULT_BLOOMERY_EXPERIENCE,
+        DEFAULT_BLOOMERY_FAILURE_CHANCE,
         "tile.oreIron"
     );
 
     registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_charcoal_flakes",
+        new ItemStack(Items.IRON_NUGGET),
         new OreIngredient("oreIron"),
         1,
         Ingredient.fromStacks(ItemMaterial.EnumType.CHARCOAL_FLAKES.asStack()),
         2,
-        20 * 60 * 6,
-        12,
-        15,
-        0.25f,
-        "pyrotech:bloom_from_oreiron",
+        DEFAULT_BLOOMERY_BURN_TIME_TICKS,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MIN,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MAX,
+        DEFAULT_BLOOMERY_EXPERIENCE,
+        DEFAULT_BLOOMERY_FAILURE_CHANCE,
         "tile.oreIron"
     );
 
     registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_coal_coke",
+        new ItemStack(Items.IRON_NUGGET),
         new OreIngredient("oreIron"),
         1,
         new OreIngredient("fuelCoke"),
         1,
         20 * 60 * 5,
-        12,
-        15,
-        0.25f,
-        "pyrotech:bloom_from_oreiron",
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MIN,
+        DEFAULT_BLOOMERY_BLOOM_YIELD_MAX,
+        DEFAULT_BLOOMERY_EXPERIENCE,
+        DEFAULT_BLOOMERY_FAILURE_CHANCE,
         "tile.oreIron"
     );
   }
@@ -184,10 +201,109 @@ public final class ModRecipes {
     PRIMITIVE_BLOOMERY_RECIPES.register(recipe.setRegistryName(new ResourceLocation(Tags.MOD_ID, name)));
   }
 
-  public static void registerPrimitiveBloomeryBloom(String name, Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks, int bloomYieldMin, int bloomYieldMax, float experience, String bloomRecipeId, String bloomLangKey) {
+  public static void registerPrimitiveBloomeryBloom(String name, ItemStack output, Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks, int bloomYieldMin, int bloomYieldMax, float experience, float failureChance, String bloomLangKey) {
 
-    PrimitiveBloomeryRecipe recipe = new PrimitiveBloomeryRecipe(input, inputCount, fuel, fuelCount, burnTimeTicks, bloomYieldMin, bloomYieldMax, experience, bloomRecipeId, bloomLangKey);
-    PRIMITIVE_BLOOMERY_RECIPES.register(recipe.setRegistryName(new ResourceLocation(Tags.MOD_ID, name)));
+    PrimitiveBloomeryRecipe recipe = createPrimitiveBloomeryBloomRecipe(output, input, inputCount, fuel, fuelCount, burnTimeTicks, bloomYieldMin, bloomYieldMax, experience, failureChance, bloomLangKey);
+    recipe.setRegistryName(new ResourceLocation(Tags.MOD_ID, name));
+    registerPrimitiveBloomeryRecipe(recipe);
+  }
+
+  public static PrimitiveBloomeryRecipe createPrimitiveBloomeryBloomRecipe(ItemStack output, Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks, int bloomYieldMin, int bloomYieldMax, float experience, float failureChance, String bloomLangKey) {
+
+    return new PrimitiveBloomeryRecipe(
+        output,
+        input,
+        inputCount,
+        fuel,
+        fuelCount,
+        burnTimeTicks,
+        bloomYieldMin,
+        bloomYieldMax,
+        experience,
+        failureChance,
+        4,
+        defaultSlagItem(),
+        defaultBloomFailureItems(),
+        new AnvilRecipe.EnumTier[]{
+            AnvilRecipe.EnumTier.GRANITE,
+            AnvilRecipe.EnumTier.IRONCLAD,
+            AnvilRecipe.EnumTier.OBSIDIAN
+        },
+        bloomLangKey
+    );
+  }
+
+  public static void registerPrimitiveBloomeryRecipe(PrimitiveBloomeryRecipe recipe) {
+
+    PRIMITIVE_BLOOMERY_RECIPES.register(recipe);
+
+    if (recipe.hasGeneratedBloomOutput()) {
+      registerPrimitiveBloomeryAnvilRecipe(recipe);
+    }
+  }
+
+  public static void registerPrimitiveBloomeryAnvilRecipe(PrimitiveBloomeryRecipe recipe) {
+
+    ResourceLocation registryName = recipe.getRegistryName();
+    if (registryName == null
+        || ModuleTechBasic.Registries.ANVIL_RECIPE == null
+        || ModuleTechBloomery.Items.BLOOM == null) {
+      return;
+    }
+
+    removePrimitiveBloomeryAnvilRecipe(registryName);
+    ModuleTechBasic.Registries.ANVIL_RECIPE.register(new BloomAnvilRecipe(
+        recipe.getOutput(),
+        Ingredient.fromStacks(recipe.getOutputBloom()),
+        ModuleTechBloomeryConfig.BLOOM.HAMMER_HITS_IN_ANVIL_REQUIRED,
+        AnvilRecipe.EnumType.HAMMER,
+        recipe.getAnvilTiers(),
+        recipe
+    ).setRegistryName(registryName));
+  }
+
+  public static void removePrimitiveBloomeryAnvilRecipe(ResourceLocation registryName) {
+
+    if (ModuleTechBasic.Registries.ANVIL_RECIPE != null) {
+      ModuleTechBasic.Registries.ANVIL_RECIPE.remove(registryName);
+    }
+  }
+
+  public static void removeAllPrimitiveBloomeryRecipes() {
+
+    if (PRIMITIVE_BLOOMERY_RECIPES == null) {
+      return;
+    }
+
+    for (PrimitiveBloomeryRecipe recipe : PRIMITIVE_BLOOMERY_RECIPES.getValuesCollection().toArray(new PrimitiveBloomeryRecipe[0])) {
+      ResourceLocation registryName = recipe.getRegistryName();
+
+      if (registryName != null) {
+        removePrimitiveBloomeryAnvilRecipe(registryName);
+        PRIMITIVE_BLOOMERY_RECIPES.remove(registryName);
+      }
+    }
+  }
+
+  private static ItemStack defaultSlagItem() {
+
+    if (ModuleTechBloomery.Items.SLAG == null) {
+      return ItemStack.EMPTY;
+    }
+
+    return new ItemStack(ModuleTechBloomery.Items.SLAG);
+  }
+
+  private static BloomeryRecipeBase.FailureItem[] defaultBloomFailureItems() {
+
+    if (ModuleTechBloomery.Items.SLAG == null || ModuleCore.Blocks.ROCK == null) {
+      return new BloomeryRecipeBase.FailureItem[0];
+    }
+
+    return new BloomeryRecipeBase.FailureItem[]{
+        new BloomeryRecipeBase.FailureItem(new ItemStack(ModuleTechBloomery.Items.SLAG), 2),
+        new BloomeryRecipeBase.FailureItem(new ItemStack(ModuleCore.Blocks.ROCK), 1)
+    };
   }
 
   private ModRecipes() {
