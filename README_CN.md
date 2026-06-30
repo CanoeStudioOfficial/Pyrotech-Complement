@@ -179,12 +179,18 @@ mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
     IIngredient input
 );
 
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+    string name,
+    IIngredient input
+);
+
 builder.setInputCount(int inputCount);
 builder.setFuel(IIngredient fuel, @Optional int fuelCount);
 builder.setBurnTimeTicks(int burnTimeTicks);
 builder.setExperience(float experience);
 builder.setFailureChance(float failureChance);
 builder.setBloomYield(int min, int max);
+builder.setHammerOutput(IItemStack output);
 builder.setSlagItem(IItemStack slagItem, int slagCount);
 builder.addFailureItem(IItemStack itemStack, int weight);
 builder.setLangKey(@Optional string langKey);
@@ -211,20 +217,22 @@ mods.pyrotechcomplement.PrimitiveBloomery.removeRecipes(IIngredient output);
 mods.pyrotechcomplement.PrimitiveBloomery.removeAllRecipes();
 ```
 
-`createBloomeryBuilder(name, output, input)` 里的 `output` 不是直接从原始锻造炉里吐出来的普通物品，而是生成的 Pyrotech 铁坯在 Pyrotech 砧上被锤打后的产物。铁坯物品本身会在 NBT 里保存这条 CraftTweaker 配方 id，并且本模组会自动注册对应的 Pyrotech `BloomAnvilRecipe`。所以锤打产物可以是任意物品，不限于铁粒。
+原始锻造炉的铁坯配方会产出 Pyrotech 铁坯物品。这个铁坯被锤打时掉落什么物品，由 `setHammerOutput(output)` 控制。生成的铁坯会在 NBT 里保存这条 CraftTweaker 配方 id，并且本模组会自动注册对应的 Pyrotech `BloomAnvilRecipe`。
+
+旧写法 `createBloomeryBuilder(name, output, input)` 仍然可用；其中 `output` 参数和 `setHammerOutput(output)` 一样，表示铁坯锤打产物。
 
 铁坯配方示例：
 
 ```zenscript
 // 1 个矿辞铁矿 + 1 个矿辞煤 -> Pyrotech 铁坯，需要 24 分钟。
-// 把这个铁坯放到支持的 Pyrotech 砧上锤打，会产出铁粒。
+// 把这个铁坯放到支持的 Pyrotech 砧上锤打，会掉落铁粒。
 // 铁坯 NBT 中的 recipeId 会是 "crafttweaker:bloom_from_iron_ore"。
 // setLangKey 是可选项；省略时会从输入物品推导铁坯名称。
 mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
         "bloom_from_iron_ore",
-        <minecraft:iron_nugget>,
         <ore:oreIron>
     )
+    .setHammerOutput(<minecraft:iron_nugget>)
     .setFuel(<ore:coal>, 1)
     .setAnvilTiers(["granite", "ironclad"])
     .setBurnTimeTicks(28800)
@@ -240,12 +248,12 @@ mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
 
 ```zenscript
 // 1 个矿辞金矿 + 1 个矿辞煤 -> Pyrotech 铁坯。
-// 把这个铁坯放到支持的 Pyrotech 砧上锤打，会产出金粒。
+// 把这个铁坯放到支持的 Pyrotech 砧上锤打，会掉落金粒。
 mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
         "bloom_from_gold_ore",
-        <minecraft:gold_nugget>,
         <ore:oreGold>
     )
+    .setHammerOutput(<minecraft:gold_nugget>)
     .setFuel(<ore:coal>, 1)
     .setAnvilTiers(["granite", "ironclad"])
     .setBurnTimeTicks(28800)
@@ -257,22 +265,74 @@ mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
     .register();
 ```
 
-Pyrotech 自带的 Bloomery CraftTweaker builder 也是同一个思路：`output` 参数就是生成的铁坯被锤打后的产物。Pyrotech 自带 Bloomery 配方不使用 `.setFuel(...)`。
+锤打产物可以是任意具体物品：
 
 ```zenscript
-mods.pyrotech.Bloomery.createBloomeryBuilder(
-        "bloom_from_gold_ore",
-        <minecraft:gold_nugget>,
-        <ore:oreGold>
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+        "diamond_bloom_from_ore",
+        <ore:oreDiamond>
     )
+    .setHammerOutput(<minecraft:diamond>)
+    .setFuel(<ore:coal>, 1)
     .setAnvilTiers(["granite", "ironclad"])
     .setBurnTimeTicks(28800)
-    .setFailureChance(0.25)
-    .setBloomYield(12, 15)
-    .setSlagItem(<pyrotech:generated_slag_iron>, 4)
-    .addFailureItem(<pyrotech:slag>, 2)
-    .setLangKey("tile.oreGold")
+    .setBloomYield(2, 4)
+    .setLangKey("tile.oreDiamond")
     .register();
+
+// 把 <modid:bronze_ingot> 换成整合包里实际的青铜锭物品。
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+        "bronze_bloom_from_copper_ore",
+        <ore:oreCopper>
+    )
+    .setHammerOutput(<modid:bronze_ingot>)
+    .setFuel(<ore:coal>, 1)
+    .setBurnTimeTicks(28800)
+    .setBloomYield(8, 12)
+    .setLangKey("tile.oreCopper")
+    .register();
+```
+
+### Pyrotech Bloomery 锤打产物
+
+ZenClass：
+
+```zenscript
+mods.pyrotechcomplement.Bloomery
+```
+
+方法：
+
+```zenscript
+mods.pyrotechcomplement.Bloomery.setHammerOutput(
+    string recipeId,
+    IItemStack output
+);
+```
+
+这个方法用于修改已有 Pyrotech Bloomery 配方生成的铁坯在锤打时掉落的物品。请在脚本里先注册 Pyrotech Bloomery 配方，再调用这个方法。
+
+```zenscript
+// 已存在的 Pyrotech 配方生成的铁坯，现在锤打时会掉落金粒。
+mods.pyrotechcomplement.Bloomery.setHammerOutput(
+    "pyrotech:bloom_from_oreiron",
+    <minecraft:gold_nugget>
+);
+
+// CraftTweaker 新增的 Pyrotech Bloomery 配方也可以改。
+mods.pyrotech.Bloomery.createBloomeryBuilder(
+        "bloom_from_diamond_ore",
+        <minecraft:iron_nugget>,
+        <ore:oreDiamond>
+    )
+    .setBloomYield(2, 4)
+    .setLangKey("tile.oreDiamond")
+    .register();
+
+mods.pyrotechcomplement.Bloomery.setHammerOutput(
+    "crafttweaker:bloom_from_diamond_ore",
+    <minecraft:diamond>
+);
 ```
 
 ## JEI 和 TOP

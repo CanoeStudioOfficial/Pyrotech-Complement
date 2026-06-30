@@ -71,6 +71,16 @@ public class ZenPrimitiveBloomery {
   }
 
   @ZenMethod
+  public static ZenPrimitiveBloomery createBloomeryBuilder(String name, IIngredient input) {
+
+    return new ZenPrimitiveBloomery(
+        name,
+        ItemStack.EMPTY,
+        CraftTweakerMC.getIngredient(input)
+    );
+  }
+
+  @ZenMethod
   public static void removeRecipes(IIngredient output) {
 
     CraftTweaker.LATE_ACTIONS.add(new RemoveRecipe(CraftTweakerMC.getIngredient(output)));
@@ -83,7 +93,7 @@ public class ZenPrimitiveBloomery {
   }
 
   private final String name;
-  private final ItemStack output;
+  private ItemStack output;
   private final Ingredient input;
   private int inputCount;
   private Ingredient fuel;
@@ -164,6 +174,13 @@ public class ZenPrimitiveBloomery {
   }
 
   @ZenMethod
+  public ZenPrimitiveBloomery setHammerOutput(IItemStack output) {
+
+    this.output = CraftTweakerMC.getItemStack(output);
+    return this;
+  }
+
+  @ZenMethod
   public ZenPrimitiveBloomery setSlagItem(IItemStack slagItem, int slagCount) {
 
     this.slagItem = CraftTweakerMC.getItemStack(slagItem);
@@ -200,6 +217,11 @@ public class ZenPrimitiveBloomery {
 
   @ZenMethod
   public void register() {
+
+    if (this.output.isEmpty()) {
+      CTLogHelper.logError("Primitive Bloomery recipe " + this.name + " has no hammer output. Use setHammerOutput(output) before register().");
+      return;
+    }
 
     CraftTweaker.LATE_ACTIONS.add(new AddBloomRecipe(this.createRecipe()));
   }

@@ -179,12 +179,18 @@ mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
     IIngredient input
 );
 
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+    string name,
+    IIngredient input
+);
+
 builder.setInputCount(int inputCount);
 builder.setFuel(IIngredient fuel, @Optional int fuelCount);
 builder.setBurnTimeTicks(int burnTimeTicks);
 builder.setExperience(float experience);
 builder.setFailureChance(float failureChance);
 builder.setBloomYield(int min, int max);
+builder.setHammerOutput(IItemStack output);
 builder.setSlagItem(IItemStack slagItem, int slagCount);
 builder.addFailureItem(IItemStack itemStack, int weight);
 builder.setLangKey(@Optional string langKey);
@@ -211,20 +217,22 @@ mods.pyrotechcomplement.PrimitiveBloomery.removeRecipes(IIngredient output);
 mods.pyrotechcomplement.PrimitiveBloomery.removeAllRecipes();
 ```
 
-The `output` parameter in `createBloomeryBuilder(name, output, input)` is the item produced when the generated Pyrotech bloom is hammered on a Pyrotech anvil. The bloom item itself stores this CraftTweaker recipe id in NBT, and a matching Pyrotech `BloomAnvilRecipe` is registered automatically. This means the hammer output can be any item stack, not only iron nuggets.
+Primitive Bloomery bloom recipes produce a Pyrotech bloom item. The item dropped while hammering that bloom is controlled by `setHammerOutput(output)`. The generated bloom stores this CraftTweaker recipe id in NBT, and this mod automatically registers the matching Pyrotech `BloomAnvilRecipe`.
+
+The older `createBloomeryBuilder(name, output, input)` form is still supported. Its `output` argument is the same hammer output used by `setHammerOutput(output)`.
 
 Example:
 
 ```zenscript
 // 1 oreIron + 1 coal -> a Pyrotech bloom after 24 minutes.
-// Hammering that bloom on a supported Pyrotech anvil produces iron nuggets.
+// Hammering that bloom on a supported Pyrotech anvil drops iron nuggets.
 // The bloom stores recipeId "crafttweaker:bloom_from_iron_ore" in NBT.
 // setLangKey is optional; omit it to infer the bloom name from the input item.
 mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
         "bloom_from_iron_ore",
-        <minecraft:iron_nugget>,
         <ore:oreIron>
     )
+    .setHammerOutput(<minecraft:iron_nugget>)
     .setFuel(<ore:coal>, 1)
     .setAnvilTiers(["granite", "ironclad"])
     .setBurnTimeTicks(28800)
@@ -240,12 +248,12 @@ Custom bloom output example:
 
 ```zenscript
 // 1 oreGold + 1 coal -> a Pyrotech bloom.
-// Hammering that bloom produces gold nuggets instead of iron nuggets.
+// Hammering that bloom drops gold nuggets instead of iron nuggets.
 mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
         "bloom_from_gold_ore",
-        <minecraft:gold_nugget>,
         <ore:oreGold>
     )
+    .setHammerOutput(<minecraft:gold_nugget>)
     .setFuel(<ore:coal>, 1)
     .setAnvilTiers(["granite", "ironclad"])
     .setBurnTimeTicks(28800)
@@ -257,22 +265,74 @@ mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
     .register();
 ```
 
-Pyrotech's own Bloomery CraftTweaker builder uses the same idea: its `output` parameter is also the hammer output of the generated bloom. Pyrotech Bloomery recipes do not use `.setFuel(...)`.
+The hammer output can be any concrete item stack:
 
 ```zenscript
-mods.pyrotech.Bloomery.createBloomeryBuilder(
-        "bloom_from_gold_ore",
-        <minecraft:gold_nugget>,
-        <ore:oreGold>
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+        "diamond_bloom_from_ore",
+        <ore:oreDiamond>
     )
+    .setHammerOutput(<minecraft:diamond>)
+    .setFuel(<ore:coal>, 1)
     .setAnvilTiers(["granite", "ironclad"])
     .setBurnTimeTicks(28800)
-    .setFailureChance(0.25)
-    .setBloomYield(12, 15)
-    .setSlagItem(<pyrotech:generated_slag_iron>, 4)
-    .addFailureItem(<pyrotech:slag>, 2)
-    .setLangKey("tile.oreGold")
+    .setBloomYield(2, 4)
+    .setLangKey("tile.oreDiamond")
     .register();
+
+// Replace <modid:bronze_ingot> with the bronze item from your modpack.
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+        "bronze_bloom_from_copper_ore",
+        <ore:oreCopper>
+    )
+    .setHammerOutput(<modid:bronze_ingot>)
+    .setFuel(<ore:coal>, 1)
+    .setBurnTimeTicks(28800)
+    .setBloomYield(8, 12)
+    .setLangKey("tile.oreCopper")
+    .register();
+```
+
+### Pyrotech Bloomery hammer output
+
+ZenClass:
+
+```zenscript
+mods.pyrotechcomplement.Bloomery
+```
+
+Methods:
+
+```zenscript
+mods.pyrotechcomplement.Bloomery.setHammerOutput(
+    string recipeId,
+    IItemStack output
+);
+```
+
+Use this to change the item dropped when a bloom from an existing Pyrotech Bloomery recipe is hammered. Call it after the Pyrotech Bloomery recipe is registered in your scripts.
+
+```zenscript
+// Existing Pyrotech recipe bloom now drops gold nuggets when hammered.
+mods.pyrotechcomplement.Bloomery.setHammerOutput(
+    "pyrotech:bloom_from_oreiron",
+    <minecraft:gold_nugget>
+);
+
+// A CraftTweaker-created Pyrotech Bloomery recipe can also be changed.
+mods.pyrotech.Bloomery.createBloomeryBuilder(
+        "bloom_from_diamond_ore",
+        <minecraft:iron_nugget>,
+        <ore:oreDiamond>
+    )
+    .setBloomYield(2, 4)
+    .setLangKey("tile.oreDiamond")
+    .register();
+
+mods.pyrotechcomplement.Bloomery.setHammerOutput(
+    "crafttweaker:bloom_from_diamond_ore",
+    <minecraft:diamond>
+);
 ```
 
 ## JEI and TOP
