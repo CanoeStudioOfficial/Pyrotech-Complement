@@ -211,10 +211,13 @@ mods.pyrotechcomplement.PrimitiveBloomery.removeRecipes(IIngredient output);
 mods.pyrotechcomplement.PrimitiveBloomery.removeAllRecipes();
 ```
 
+The `output` parameter in `createBloomeryBuilder(name, output, input)` is the item produced when the generated Pyrotech bloom is hammered on a Pyrotech anvil. The bloom item itself stores this CraftTweaker recipe id in NBT, and a matching Pyrotech `BloomAnvilRecipe` is registered automatically. This means the hammer output can be any item stack, not only iron nuggets.
+
 Example:
 
 ```zenscript
 // 1 oreIron + 1 coal -> a Pyrotech bloom after 24 minutes.
+// Hammering that bloom on a supported Pyrotech anvil produces iron nuggets.
 // The bloom stores recipeId "crafttweaker:bloom_from_iron_ore" in NBT.
 // setLangKey is optional; omit it to infer the bloom name from the input item.
 mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
@@ -230,6 +233,45 @@ mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
     .setSlagItem(<pyrotech:slag>, 4)
     .addFailureItem(<pyrotech:slag>, 2)
     .setLangKey("tile.oreIron")
+    .register();
+```
+
+Custom bloom output example:
+
+```zenscript
+// 1 oreGold + 1 coal -> a Pyrotech bloom.
+// Hammering that bloom produces gold nuggets instead of iron nuggets.
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+        "bloom_from_gold_ore",
+        <minecraft:gold_nugget>,
+        <ore:oreGold>
+    )
+    .setFuel(<ore:coal>, 1)
+    .setAnvilTiers(["granite", "ironclad"])
+    .setBurnTimeTicks(28800)
+    .setFailureChance(0.25)
+    .setBloomYield(12, 15)
+    .setSlagItem(<pyrotech:generated_slag_iron>, 4)
+    .addFailureItem(<pyrotech:slag>, 2)
+    .setLangKey("tile.oreGold")
+    .register();
+```
+
+Pyrotech's own Bloomery CraftTweaker builder uses the same idea: its `output` parameter is also the hammer output of the generated bloom. Pyrotech Bloomery recipes do not use `.setFuel(...)`.
+
+```zenscript
+mods.pyrotech.Bloomery.createBloomeryBuilder(
+        "bloom_from_gold_ore",
+        <minecraft:gold_nugget>,
+        <ore:oreGold>
+    )
+    .setAnvilTiers(["granite", "ironclad"])
+    .setBurnTimeTicks(28800)
+    .setFailureChance(0.25)
+    .setBloomYield(12, 15)
+    .setSlagItem(<pyrotech:generated_slag_iron>, 4)
+    .addFailureItem(<pyrotech:slag>, 2)
+    .setLangKey("tile.oreGold")
     .register();
 ```
 

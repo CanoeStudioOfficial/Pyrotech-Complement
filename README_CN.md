@@ -211,10 +211,13 @@ mods.pyrotechcomplement.PrimitiveBloomery.removeRecipes(IIngredient output);
 mods.pyrotechcomplement.PrimitiveBloomery.removeAllRecipes();
 ```
 
+`createBloomeryBuilder(name, output, input)` 里的 `output` 不是直接从原始锻造炉里吐出来的普通物品，而是生成的 Pyrotech 铁坯在 Pyrotech 砧上被锤打后的产物。铁坯物品本身会在 NBT 里保存这条 CraftTweaker 配方 id，并且本模组会自动注册对应的 Pyrotech `BloomAnvilRecipe`。所以锤打产物可以是任意物品，不限于铁粒。
+
 铁坯配方示例：
 
 ```zenscript
 // 1 个矿辞铁矿 + 1 个矿辞煤 -> Pyrotech 铁坯，需要 24 分钟。
+// 把这个铁坯放到支持的 Pyrotech 砧上锤打，会产出铁粒。
 // 铁坯 NBT 中的 recipeId 会是 "crafttweaker:bloom_from_iron_ore"。
 // setLangKey 是可选项；省略时会从输入物品推导铁坯名称。
 mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
@@ -230,6 +233,45 @@ mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
     .setSlagItem(<pyrotech:slag>, 4)
     .addFailureItem(<pyrotech:slag>, 2)
     .setLangKey("tile.oreIron")
+    .register();
+```
+
+自定义铁坯锤打产物示例：
+
+```zenscript
+// 1 个矿辞金矿 + 1 个矿辞煤 -> Pyrotech 铁坯。
+// 把这个铁坯放到支持的 Pyrotech 砧上锤打，会产出金粒。
+mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
+        "bloom_from_gold_ore",
+        <minecraft:gold_nugget>,
+        <ore:oreGold>
+    )
+    .setFuel(<ore:coal>, 1)
+    .setAnvilTiers(["granite", "ironclad"])
+    .setBurnTimeTicks(28800)
+    .setFailureChance(0.25)
+    .setBloomYield(12, 15)
+    .setSlagItem(<pyrotech:generated_slag_iron>, 4)
+    .addFailureItem(<pyrotech:slag>, 2)
+    .setLangKey("tile.oreGold")
+    .register();
+```
+
+Pyrotech 自带的 Bloomery CraftTweaker builder 也是同一个思路：`output` 参数就是生成的铁坯被锤打后的产物。Pyrotech 自带 Bloomery 配方不使用 `.setFuel(...)`。
+
+```zenscript
+mods.pyrotech.Bloomery.createBloomeryBuilder(
+        "bloom_from_gold_ore",
+        <minecraft:gold_nugget>,
+        <ore:oreGold>
+    )
+    .setAnvilTiers(["granite", "ironclad"])
+    .setBurnTimeTicks(28800)
+    .setFailureChance(0.25)
+    .setBloomYield(12, 15)
+    .setSlagItem(<pyrotech:generated_slag_iron>, 4)
+    .addFailureItem(<pyrotech:slag>, 2)
+    .setLangKey("tile.oreGold")
     .register();
 ```
 
