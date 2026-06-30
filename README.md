@@ -187,7 +187,7 @@ builder.setFailureChance(float failureChance);
 builder.setBloomYield(int min, int max);
 builder.setSlagItem(IItemStack slagItem, int slagCount);
 builder.addFailureItem(IItemStack itemStack, int weight);
-builder.setLangKey(string langKey);
+builder.setLangKey(@Optional string langKey);
 builder.setAnvilTiers(string[] tiers);
 builder.register();
 
@@ -216,6 +216,7 @@ Example:
 ```zenscript
 // 1 oreIron + 1 coal -> a Pyrotech bloom after 24 minutes.
 // The bloom stores recipeId "crafttweaker:bloom_from_iron_ore" in NBT.
+// setLangKey is optional; omit it to infer the bloom name from the input item.
 mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
         "bloom_from_iron_ore",
         <minecraft:iron_nugget>,

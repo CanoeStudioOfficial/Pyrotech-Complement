@@ -187,7 +187,7 @@ builder.setFailureChance(float failureChance);
 builder.setBloomYield(int min, int max);
 builder.setSlagItem(IItemStack slagItem, int slagCount);
 builder.addFailureItem(IItemStack itemStack, int weight);
-builder.setLangKey(string langKey);
+builder.setLangKey(@Optional string langKey);
 builder.setAnvilTiers(string[] tiers);
 builder.register();
 
@@ -216,6 +216,7 @@ mods.pyrotechcomplement.PrimitiveBloomery.removeAllRecipes();
 ```zenscript
 // 1 个矿辞铁矿 + 1 个矿辞煤 -> Pyrotech 铁坯，需要 24 分钟。
 // 铁坯 NBT 中的 recipeId 会是 "crafttweaker:bloom_from_iron_ore"。
+// setLangKey 是可选项；省略时会从输入物品推导铁坯名称。
 mods.pyrotechcomplement.PrimitiveBloomery.createBloomeryBuilder(
         "bloom_from_iron_ore",
         <minecraft:iron_nugget>,
