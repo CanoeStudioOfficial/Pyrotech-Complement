@@ -3,6 +3,8 @@ package com.canoestudios.pyrotechcomplement.tile;
 import com.canoestudios.pyrotechcomplement.init.ModSounds;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
 import com.codetaylor.mc.athenaeum.spi.TileEntityBase;
+import com.codetaylor.mc.pyrotech.modules.core.ModuleCore;
+import com.codetaylor.mc.pyrotech.modules.core.network.SCPacketParticleProgress;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -108,6 +110,7 @@ public class TileLoom
         this.lastPushed = now;
         this.progress++;
         this.world.playSound(null, this.pos, ModSounds.LOOM_WEAVE, SoundCategory.BLOCKS, 1.0f, 0.95f + this.world.rand.nextFloat() * 0.1f);
+        this.spawnProgressParticles();
         if (this.progress >= this.recipe.getSteps()) {
           ItemStack result = this.recipe.getOutput();
           this.inventory.setStackInSlot(SLOT_INPUT, ItemStack.EMPTY);
@@ -120,6 +123,17 @@ public class TileLoom
     }
 
     return false;
+  }
+
+  private void spawnProgressParticles() {
+
+    if (ModuleCore.PACKET_SERVICE != null) {
+      ModuleCore.PACKET_SERVICE.sendToAllAround(
+          new SCPacketParticleProgress(this.pos.getX() + 0.5, this.pos.getY() + 1, this.pos.getZ() + 0.5, 2),
+          this.world.provider.getDimension(),
+          this.pos
+      );
+    }
   }
 
   private boolean removeInput(EntityPlayer player) {

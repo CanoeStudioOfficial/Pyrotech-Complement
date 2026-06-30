@@ -2,8 +2,10 @@ package com.canoestudios.pyrotechcomplement.tile;
 
 import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.codetaylor.mc.athenaeum.spi.TileEntityBase;
+import com.codetaylor.mc.pyrotech.modules.core.ModuleCore;
 import com.codetaylor.mc.pyrotech.modules.core.ModuleCoreConfig;
 import com.codetaylor.mc.pyrotech.modules.core.item.spi.ItemHammerBase;
+import com.codetaylor.mc.pyrotech.modules.core.network.SCPacketParticleProgress;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -191,6 +193,7 @@ public class TileForgingTable
       this.progress++;
       this.damageHammer(player, hammer);
       this.world.playSound(null, this.pos, SoundEvents.BLOCK_ANVIL_USE, SoundCategory.BLOCKS, 0.75f, 0.9f + this.world.rand.nextFloat() * 0.2f);
+      this.spawnProgressParticles();
 
       if (this.progress >= matchingRecipe.getHits()) {
         input.shrink(matchingRecipe.getInputCount());
@@ -209,6 +212,17 @@ public class TileForgingTable
     }
 
     return true;
+  }
+
+  private void spawnProgressParticles() {
+
+    if (ModuleCore.PACKET_SERVICE != null) {
+      ModuleCore.PACKET_SERVICE.sendToAllAround(
+          new SCPacketParticleProgress(this.pos.getX() + 0.5, this.pos.getY() + 1, this.pos.getZ() + 0.5, 2),
+          this.world.provider.getDimension(),
+          this.pos
+      );
+    }
   }
 
   private void damageHammer(EntityPlayer player, ItemStack hammer) {
