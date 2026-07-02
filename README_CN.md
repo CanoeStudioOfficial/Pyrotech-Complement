@@ -152,6 +152,42 @@ mods.pyrotechcomplement.ForgingTable.removeRecipes(<pyrotech:material:19>);
 // mods.pyrotechcomplement.ForgingTable.removeAllRecipes();
 ```
 
+### 石炉
+
+Pyrotech 的 `StoneOvenRecipe` 底层本来支持每条配方单独设置烹饪时间，但原版 `mods.pyrotech.StoneOven.addRecipe(...)` 的 CraftTweaker 方法没有暴露这个参数。本模组补了一个带时间参数的入口。
+
+ZenClass：
+
+```zenscript
+mods.pyrotechcomplement.StoneOven
+```
+
+方法：
+
+```zenscript
+mods.pyrotechcomplement.StoneOven.addRecipe(
+    string name,
+    IItemStack output,
+    IIngredient input,
+    int cookTimeTicks,
+    @Optional boolean inherited
+);
+```
+
+示例：
+
+```zenscript
+// 1 个苹果 -> 1 个烤苹果，需要 30 秒。
+// inherited=true 时，会按 Pyrotech 原本的时长倍率同步继承到 Brick Oven。
+mods.pyrotechcomplement.StoneOven.addRecipe(
+    "baked_apple_slow",
+    <pyrotech:apple_baked>,
+    <minecraft:apple>,
+    600,
+    true
+);
+```
+
 ### 原始锻造炉
 
 ZenClass：

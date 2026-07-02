@@ -152,6 +152,42 @@ mods.pyrotechcomplement.ForgingTable.removeRecipes(<pyrotech:material:19>);
 // mods.pyrotechcomplement.ForgingTable.removeAllRecipes();
 ```
 
+### Stone Oven
+
+Pyrotech's `StoneOvenRecipe` already supports per-recipe cook time internally, but the original `mods.pyrotech.StoneOven.addRecipe(...)` CraftTweaker method does not expose that parameter. This extension adds a timed recipe entry point.
+
+ZenClass:
+
+```zenscript
+mods.pyrotechcomplement.StoneOven
+```
+
+Methods:
+
+```zenscript
+mods.pyrotechcomplement.StoneOven.addRecipe(
+    string name,
+    IItemStack output,
+    IIngredient input,
+    int cookTimeTicks,
+    @Optional boolean inherited
+);
+```
+
+Example:
+
+```zenscript
+// 1 apple -> 1 baked apple, 30 seconds.
+// inherited=true also registers the inherited Brick Oven recipe using Pyrotech's normal duration modifier.
+mods.pyrotechcomplement.StoneOven.addRecipe(
+    "baked_apple_slow",
+    <pyrotech:apple_baked>,
+    <minecraft:apple>,
+    600,
+    true
+);
+```
+
 ### Primitive Bloomery
 
 ZenClass:
