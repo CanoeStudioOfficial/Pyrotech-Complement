@@ -9,6 +9,7 @@ itemGroup.pyrotechcomplement=火种科技 补充
 gui.pyrotechcomplement.jei.category.loom=织机
 gui.pyrotechcomplement.jei.category.forging_table=锻造台
 gui.pyrotechcomplement.jei.category.primitive_bloomery=原始锻造炉
+gui.pyrotechcomplement.jei.info.primitive_bloomery=要使用原始锻造炉，先把炉门贴着 1 格空炉膛放置。炉膛下方和另外三侧需要石质方块，上方搭竖直石质烟囱，最高 4 格。烟囱中心保持空心，从上方丢入矿石和燃料，然后点燃炉门。门旁的 Pyrotech 风箱可以加速燃烧。
 gui.pyrotechcomplement.top.primitive_bloomery.unformed=结构未成型
 gui.pyrotechcomplement.top.primitive_bloomery.capacity=容量：%d / %d
 gui.pyrotechcomplement.top.primitive_bloomery.time=时间：%s / %s

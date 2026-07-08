@@ -15,6 +15,7 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
 
@@ -40,6 +41,12 @@ public class PluginJEI
 
   @Override
   public void register(IModRegistry registry) {
+
+    registry.addIngredientInfo(
+        new ItemStack(ModBlocks.PRIMITIVE_BLOOMERY),
+        VanillaTypes.ITEM,
+        "gui.pyrotechcomplement.jei.info.primitive_bloomery"
+    );
 
     registry.addRecipeCatalyst(new ItemStack(ModBlocks.CRUDE_LOOM), JEIRecipeCategoryLoom.UID);
     registry.addRecipeCatalyst(new ItemStack(ModBlocks.LOOM), JEIRecipeCategoryLoom.UID);

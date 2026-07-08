@@ -9,6 +9,7 @@ itemGroup.pyrotechcomplement=Pyrotech Complement
 gui.pyrotechcomplement.jei.category.loom=Loom
 gui.pyrotechcomplement.jei.category.forging_table=Forging Table
 gui.pyrotechcomplement.jei.category.primitive_bloomery=Primitive Bloomery
+gui.pyrotechcomplement.jei.info.primitive_bloomery=To use a Primitive Bloomery, place the door against a one-block internal space. The internal space needs stone below and on the three other sides, with a vertical stone chimney above it up to 4 blocks tall. Keep the chimney center open, drop ore and fuel in from above, then ignite the door. Pyrotech bellows next to the door can speed the burn.
 gui.pyrotechcomplement.top.primitive_bloomery.unformed=Structure incomplete
 gui.pyrotechcomplement.top.primitive_bloomery.capacity=Capacity: %d / %d
 gui.pyrotechcomplement.top.primitive_bloomery.time=Time: %s / %s
