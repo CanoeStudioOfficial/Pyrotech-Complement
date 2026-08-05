@@ -5,11 +5,14 @@ import com.canoestudios.pyrotechcomplement.block.BlockForgingTable;
 import com.canoestudios.pyrotechcomplement.block.BlockLoom;
 import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomery;
 import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomeryMolten;
+import com.canoestudios.pyrotechcomplement.block.BlockQuern;
 import com.canoestudios.pyrotechcomplement.block.BlockSluice;
+import com.canoestudios.pyrotechcomplement.item.ItemQuernHandstone;
 import com.canoestudios.pyrotechcomplement.item.ItemSluice;
 import com.canoestudios.pyrotechcomplement.tile.TileForgingTable;
 import com.canoestudios.pyrotechcomplement.tile.TileLoom;
 import com.canoestudios.pyrotechcomplement.tile.TilePrimitiveBloomery;
+import com.canoestudios.pyrotechcomplement.tile.TileQuern;
 import com.canoestudios.pyrotechcomplement.tile.TileSluice;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -33,6 +36,8 @@ public final class ModBlocks {
   public static final BlockPrimitiveBloomeryMolten PRIMITIVE_BLOOMERY_MOLTEN = new BlockPrimitiveBloomeryMolten("primitive_bloomery_molten");
   public static final BlockSluice CRUDE_SLUICE = new BlockSluice("crude_sluice", BlockSluice.Tier.CRUDE);
   public static final BlockSluice SLUICE = new BlockSluice("sluice", BlockSluice.Tier.NORMAL);
+  public static final BlockQuern QUERN = new BlockQuern("quern");
+  public static final ItemQuernHandstone HANDSTONE = new ItemQuernHandstone("handstone");
 
   public static void registerBlocks(IForgeRegistry<Block> registry) {
 
@@ -45,6 +50,7 @@ public final class ModBlocks {
     registry.register(PRIMITIVE_BLOOMERY_MOLTEN);
     registry.register(CRUDE_SLUICE);
     registry.register(SLUICE);
+    registry.register(QUERN);
   }
 
   public static void registerItems(IForgeRegistry<Item> registry) {
@@ -57,6 +63,8 @@ public final class ModBlocks {
     registerItemBlock(registry, PRIMITIVE_BLOOMERY);
     registerSluiceItem(registry, CRUDE_SLUICE);
     registerSluiceItem(registry, SLUICE);
+    registerItemBlock(registry, QUERN);
+    registry.register(HANDSTONE);
   }
 
   private static void registerItemBlock(IForgeRegistry<Item> registry, Block block) {
@@ -81,6 +89,7 @@ public final class ModBlocks {
     GameRegistry.registerTileEntity(TileForgingTable.class, new ResourceLocation(Tags.MOD_ID, "tile.forging_table"));
     GameRegistry.registerTileEntity(TilePrimitiveBloomery.class, new ResourceLocation(Tags.MOD_ID, "tile.primitive_bloomery"));
     GameRegistry.registerTileEntity(TileSluice.class, new ResourceLocation(Tags.MOD_ID, "tile.sluice"));
+    GameRegistry.registerTileEntity(TileQuern.class, new ResourceLocation(Tags.MOD_ID, "tile.quern"));
   }
 
   @SideOnly(Side.CLIENT)
@@ -94,6 +103,8 @@ public final class ModBlocks {
     registerModel(Item.getItemFromBlock(PRIMITIVE_BLOOMERY), "primitive_bloomery");
     registerModel(Item.getItemFromBlock(CRUDE_SLUICE), "crude_sluice");
     registerModel(Item.getItemFromBlock(SLUICE), "sluice");
+    registerModel(Item.getItemFromBlock(QUERN), "quern");
+    registerModel(HANDSTONE, "handstone");
   }
 
   @SideOnly(Side.CLIENT)

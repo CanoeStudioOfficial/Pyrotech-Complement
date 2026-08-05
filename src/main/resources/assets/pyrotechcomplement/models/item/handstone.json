@@ -1,0 +1,9 @@
+{
+  "parent": "pyrotechcomplement:item/handstone_healthy",
+  "overrides": [
+    {
+      "predicate": {"pyrotechcomplement:damaged": 1.0},
+      "model": "pyrotechcomplement:item/handstone_damaged"
+    }
+  ]
+}

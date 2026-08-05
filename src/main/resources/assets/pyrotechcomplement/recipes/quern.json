@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "YYY",
+    "XXX"
+  ],
+  "key": {
+    "X": {"item": "minecraft:cobblestone"},
+    "Y": {"item": "minecraft:stone", "data": 0}
+  },
+  "result": {
+    "item": "pyrotechcomplement:quern",
+    "count": 1
+  }
+}

@@ -4,6 +4,7 @@ import com.canoestudios.pyrotechcomplement.Tags;
 import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
+import com.canoestudios.pyrotechcomplement.recipe.QuernRecipe;
 import com.codetaylor.mc.pyrotech.modules.core.ModuleCore;
 import com.codetaylor.mc.pyrotech.modules.core.item.ItemMaterial;
 import com.codetaylor.mc.pyrotech.modules.tech.basic.ModuleTechBasic;
@@ -32,6 +33,7 @@ public final class ModRecipes {
   public static IForgeRegistryModifiable<LoomRecipe> LOOM_RECIPES;
   public static IForgeRegistryModifiable<ForgingTableRecipe> FORGING_TABLE_RECIPES;
   public static IForgeRegistryModifiable<PrimitiveBloomeryRecipe> PRIMITIVE_BLOOMERY_RECIPES;
+  public static IForgeRegistryModifiable<QuernRecipe> QUERN_RECIPES;
 
   @SuppressWarnings("unchecked")
   public static void initRegistry() {
@@ -39,11 +41,12 @@ public final class ModRecipes {
     LOOM_RECIPES = (IForgeRegistryModifiable<LoomRecipe>) GameRegistry.findRegistry(LoomRecipe.class);
     FORGING_TABLE_RECIPES = (IForgeRegistryModifiable<ForgingTableRecipe>) GameRegistry.findRegistry(ForgingTableRecipe.class);
     PRIMITIVE_BLOOMERY_RECIPES = (IForgeRegistryModifiable<PrimitiveBloomeryRecipe>) GameRegistry.findRegistry(PrimitiveBloomeryRecipe.class);
+    QUERN_RECIPES = (IForgeRegistryModifiable<QuernRecipe>) GameRegistry.findRegistry(QuernRecipe.class);
   }
 
   public static void registerDefaults() {
 
-    if (LOOM_RECIPES == null || FORGING_TABLE_RECIPES == null || PRIMITIVE_BLOOMERY_RECIPES == null) {
+    if (LOOM_RECIPES == null || FORGING_TABLE_RECIPES == null || PRIMITIVE_BLOOMERY_RECIPES == null || QUERN_RECIPES == null) {
       initRegistry();
     }
 
@@ -157,6 +160,18 @@ public final class ModRecipes {
         "tile.oreIron"
     );
 
+    registerQuern("wheat_to_bread",
+        new ItemStack(Items.BREAD),
+        Ingredient.fromStacks(new ItemStack(Items.WHEAT)),
+        QuernRecipe.DEFAULT_GRINDING_TICKS
+    );
+
+    registerQuern("bone_to_bone_meal",
+        new ItemStack(Items.DYE, 3, 15),
+        Ingredient.fromStacks(new ItemStack(Items.BONE)),
+        QuernRecipe.DEFAULT_GRINDING_TICKS
+    );
+
     registerPrimitiveBloomeryBloom("iron_bloom_from_ore_and_coal_coke",
         new ItemStack(Items.IRON_NUGGET),
         new OreIngredient("oreIron"),
@@ -193,6 +208,12 @@ public final class ModRecipes {
 
     ForgingTableRecipe recipe = new ForgingTableRecipe(output, input, inputCount, secondaryInput, secondaryInputCount, hits);
     FORGING_TABLE_RECIPES.register(recipe.setRegistryName(new ResourceLocation(Tags.MOD_ID, name)));
+  }
+
+  public static void registerQuern(String name, ItemStack output, Ingredient input, int grindingTicks) {
+
+    QuernRecipe recipe = new QuernRecipe(output, input, grindingTicks);
+    QUERN_RECIPES.register(recipe.setRegistryName(new ResourceLocation(Tags.MOD_ID, name)));
   }
 
   public static void registerPrimitiveBloomery(String name, ItemStack output, Ingredient input, int inputCount, Ingredient fuel, int fuelCount, int burnTimeTicks) {

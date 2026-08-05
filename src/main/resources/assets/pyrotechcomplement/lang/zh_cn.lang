@@ -24,3 +24,6 @@ gui.pyrotechcomplement.top.sluice.water_ready=水流：正常
 gui.pyrotechcomplement.top.sluice.water_missing=水流：缺失或被阻挡
 tile.pyrotechcomplement.sluice.name=洗矿槽
 tile.pyrotechcomplement.crude_sluice.name=简陋的洗矿槽
+tile.pyrotechcomplement.quern.name=手推磨
+item.pyrotechcomplement.handstone.name=手推磨磨盘
+gui.pyrotechcomplement.top.quern.no_handstone=需要安装手推磨磨盘

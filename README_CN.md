@@ -26,6 +26,8 @@ Pyrotech Complement 是一个 Minecraft 1.12.2 的 Pyrotech 附属模组。它�
 - 复合锻造台
 - 简陋的洗矿槽
 - 洗矿槽
+- 手推磨
+- 手推磨磨盘
 - 原始锻造炉
 
 锻造台使用 Pyrotech 的锤子体系。支持 Pyrotech 锤子、Pyrotech 锤子配置列表、工具类 `hammer`，以及矿辞锤子，例如 `toolHammer`。
@@ -228,6 +230,35 @@ mods.pyrotechcomplement.Sluice.removeRecipes(<ore:oreGold>);
 
 // 移除所有自定义和自动洗矿配方。
 // mods.pyrotechcomplement.Sluice.removeAllRecipes();
+```
+
+### 手推磨
+
+手推磨是接近 TFC 的手动研磨设备。先把手推磨磨盘安装到手推磨，再把输入物品放在中心，最后空手右键把手开始研磨。默认研磨时间为 90 tick，完成一次会消耗磨盘 1 点耐久。磨盘、输入物品和输出物品都会在方块内部渲染显示。
+
+ZenClass：
+
+```zenscript
+mods.pyrotechcomplement.Quern
+```
+
+```zenscript
+// 第四个参数可选，表示研磨时间 tick；省略时为 90。
+mods.pyrotechcomplement.Quern.addRecipe(
+    "wheat_to_bread",
+    <minecraft:bread>,
+    <minecraft:wheat>
+);
+
+mods.pyrotechcomplement.Quern.addRecipe(
+    "custom_quern_recipe",
+    <some_mod:result>,
+    <some_mod:input>,
+    120
+);
+
+mods.pyrotechcomplement.Quern.removeRecipes(<minecraft:wheat>);
+// mods.pyrotechcomplement.Quern.removeAllRecipes();
 ```
 
 ### 石炉

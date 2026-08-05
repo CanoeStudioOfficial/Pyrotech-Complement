@@ -26,6 +26,8 @@ Optional integrations:
 - Ironclad Forging Table
 - Crude Sluice
 - Sluice
+- Quern
+- Handstone
 - Primitive Bloomery
 
 The forging tables use Pyrotech hammer support. Pyrotech hammers, Pyrotech's hammer config list, tool class `hammer`, and ore dictionary hammers such as `toolHammer` are accepted.
@@ -235,6 +237,35 @@ mods.pyrotechcomplement.Sluice.removeRecipes(<ore:oreGold>);
 // mods.pyrotechcomplement.Sluice.removeAllRecipes();
 ```
 
+### Quern
+
+The quern is a TFC-style manual hand mill. Install a `Handstone`, place an input in the center, then right-click the handle with an empty hand. Grinding takes 90 ticks by default and consumes one point of handstone durability. The handstone, input, and output are rendered inside the block.
+
+ZenClass:
+
+```zenscript
+mods.pyrotechcomplement.Quern
+```
+
+```zenscript
+// Optional fourth argument: grinding time in ticks. The default is 90.
+mods.pyrotechcomplement.Quern.addRecipe(
+    "wheat_to_bread",
+    <minecraft:bread>,
+    <minecraft:wheat>
+);
+
+mods.pyrotechcomplement.Quern.addRecipe(
+    "custom_quern_recipe",
+    <some_mod:result>,
+    <some_mod:input>,
+    120
+);
+
+mods.pyrotechcomplement.Quern.removeRecipes(<minecraft:wheat>);
+// mods.pyrotechcomplement.Quern.removeAllRecipes();
+```
+
 ### Stone Oven
 
 Pyrotech's `StoneOvenRecipe` already supports per-recipe cook time internally, but the original `mods.pyrotech.StoneOven.addRecipe(...)` CraftTweaker method does not expose that parameter. This extension adds a timed recipe entry point.
@@ -423,7 +454,7 @@ mods.pyrotech.Bloomery.createBloomeryBuilder(
 
 JEI recipe categories are available for the loom, forging table, primitive bloomery, and both sluice tiers. The sluice category shows representative inputs, possible random outputs, normal/crude processing times, and CraftTweaker output chances.
 
-The One Probe displays capacity, water-flow status, active input, and progress for both sluice tiers, as well as the existing loom, forging table, and primitive bloomery information.
+The One Probe displays capacity, water-flow status, active input, and progress for both sluice tiers, as well as the existing loom, forging table, primitive bloomery, and quern information. The quern provider shows the installed handstone, input/output, and grinding progress.
 
 ## Build
 

@@ -1,0 +1,8 @@
+{
+  "parent": "pyrotechcomplement:item/handstone_healthy",
+  "textures": {
+    "side": "pyrotechcomplement:blocks/quern/handstone_side_damaged",
+    "top": "pyrotechcomplement:blocks/quern/handstone_top_damaged",
+    "particle": "pyrotechcomplement:blocks/quern/handstone_side_damaged"
+  }
+}

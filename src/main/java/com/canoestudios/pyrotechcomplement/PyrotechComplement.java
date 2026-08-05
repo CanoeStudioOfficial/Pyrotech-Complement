@@ -8,6 +8,7 @@ import com.canoestudios.pyrotechcomplement.proxy.CommonProxy;
 import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
+import com.canoestudios.pyrotechcomplement.recipe.QuernRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
@@ -72,6 +73,12 @@ public class PyrotechComplement {
         new RegistryBuilder<PrimitiveBloomeryRecipe>()
             .setName(new ResourceLocation(Tags.MOD_ID, "primitive_bloomery_recipe"))
             .setType(PrimitiveBloomeryRecipe.class)
+            .allowModification()
+            .create();
+
+        new RegistryBuilder<QuernRecipe>()
+            .setName(new ResourceLocation(Tags.MOD_ID, "quern_recipe"))
+            .setType(QuernRecipe.class)
             .allowModification()
             .create();
 
