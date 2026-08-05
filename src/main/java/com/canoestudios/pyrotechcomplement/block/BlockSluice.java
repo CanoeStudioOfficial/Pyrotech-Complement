@@ -161,9 +161,6 @@ public class BlockSluice
       if (state.getValue(UPPER)) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileSluice) {
-          // During breakBlock the world state at pos is already air, so pass
-          // the original state instead of making the tile entity read it.
-          ((TileSluice) tileEntity).removeOutputWater(state, pos);
           ((TileSluice) tileEntity).dropContents();
         }
       }

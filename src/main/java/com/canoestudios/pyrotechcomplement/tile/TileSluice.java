@@ -4,12 +4,10 @@ import com.codetaylor.mc.athenaeum.util.ParticleHelper;
 import com.canoestudios.pyrotechcomplement.block.BlockSluice;
 import com.canoestudios.pyrotechcomplement.recipe.SluiceRecipe;
 import com.codetaylor.mc.athenaeum.spi.TileEntityBase;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -70,7 +68,7 @@ public class TileSluice
 
     State state = this.getRepresentativeState();
     if (this.world.isRemote) {
-      if (state == State.BOTH
+      if ((state == State.BOTH || state == State.INPUT_ONLY)
           && this.hasInputItems()
           && this.world.getTotalWorldTime() % 40 == 0) {
         ParticleHelper.spawnProgressParticlesClient(
@@ -86,15 +84,9 @@ public class TileSluice
       return;
     }
 
-    if (state == State.INPUT_ONLY) {
-      this.createOutputWater();
-      state = this.getRepresentativeState();
-    } else if (state == State.OUTPUT_ONLY) {
-      this.removeOutputWater();
-      return;
-    }
-
-    if (state != State.BOTH) {
+    // A flowing water block is enough to operate the sluice. The outlet is not
+    // part of the machine's input and must never be consumed or cleared.
+    if (state != State.BOTH && state != State.INPUT_ONLY) {
       return;
     }
 
@@ -269,44 +261,6 @@ public class TileSluice
     }
   }
 
-  public void removeOutputWater() {
-
-    if (this.world == null || this.world.isRemote) {
-      return;
-    }
-
-    IBlockState state = this.world.getBlockState(this.pos);
-    if (!(state.getBlock() instanceof BlockSluice)
-        || !state.getValue(BlockSluice.UPPER)) {
-      return;
-    }
-
-    this.removeOutputWater(state, this.pos);
-  }
-
-  public void removeOutputWater(IBlockState sluiceState, BlockPos sluicePos) {
-
-    if (this.world == null || this.world.isRemote
-        || !(sluiceState.getBlock() instanceof BlockSluice)
-        || !sluiceState.getValue(BlockSluice.UPPER)) {
-      return;
-    }
-
-    BlockPos outputPos = BlockSluice.getFluidOutputPos(sluiceState, sluicePos);
-    if (isWater(this.world.getBlockState(outputPos))) {
-      this.world.setBlockToAir(outputPos);
-    }
-  }
-
-  private void createOutputWater() {
-
-    BlockPos outputPos = this.getWaterOutputPos();
-    IBlockState state = this.world.getBlockState(outputPos);
-    if (state.getBlock().isReplaceable(this.world, outputPos)) {
-      this.world.setBlockState(outputPos, Blocks.WATER.getDefaultState(), 3);
-    }
-  }
-
   private boolean isUpperBlock() {
 
     IBlockState state = this.world.getBlockState(this.pos);
@@ -380,7 +334,8 @@ public class TileSluice
 
   public boolean isWaterReady() {
 
-    return this.getRepresentativeState() == State.BOTH;
+    State state = this.getRepresentativeState();
+    return state == State.BOTH || state == State.INPUT_ONLY;
   }
 
   private BlockPos getWaterInputPos() {
@@ -411,12 +366,9 @@ public class TileSluice
 
   private static boolean isUsableInputWater(IBlockState state) {
 
-    if (!(state.getBlock() instanceof BlockLiquid)) {
-      return true;
-    }
-
-    int level = state.getValue(BlockLiquid.LEVEL);
-    return level == 0 || level == 1;
+    // Accept source and every flowing-water level. In 1.12.2 the LEVEL value
+    // increases as water flows away from its source.
+    return isWater(state);
   }
 
   public ItemStack getStackInSlot(int slot) {
