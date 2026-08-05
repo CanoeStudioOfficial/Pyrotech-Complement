@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "wood": "pyrotech:blocks/drying_rack_crude",
+      "rail": "minecraft:blocks/log_oak",
+      "particle": "pyrotech:blocks/drying_rack_crude"
+    }
+  },
+  "variants": {
+    "facing=north,upper=true": { "model": "pyrotechcomplement:sluice_upper", "y": 0 },
+    "facing=east,upper=true": { "model": "pyrotechcomplement:sluice_upper", "y": 90 },
+    "facing=south,upper=true": { "model": "pyrotechcomplement:sluice_upper", "y": 180 },
+    "facing=west,upper=true": { "model": "pyrotechcomplement:sluice_upper", "y": 270 },
+    "facing=north,upper=false": { "model": "pyrotechcomplement:sluice_lower", "y": 0 },
+    "facing=east,upper=false": { "model": "pyrotechcomplement:sluice_lower", "y": 90 },
+    "facing=south,upper=false": { "model": "pyrotechcomplement:sluice_lower", "y": 180 },
+    "facing=west,upper=false": { "model": "pyrotechcomplement:sluice_lower", "y": 270 }
+  }
+}

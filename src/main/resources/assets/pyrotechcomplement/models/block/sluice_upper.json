@@ -1,0 +1,50 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "wood": "pyrotech:blocks/planks_tarred",
+    "rail": "minecraft:blocks/log_oak",
+    "particle": "pyrotech:blocks/planks_tarred"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0], "to": [16, 10, 4],
+      "faces": {
+        "north": {"texture": "#wood"}, "south": {"texture": "#wood"},
+        "east": {"texture": "#rail"}, "west": {"texture": "#rail"},
+        "up": {"texture": "#wood"}, "down": {"texture": "#wood"}
+      }
+    },
+    {
+      "from": [0, 0, 4], "to": [16, 12, 8],
+      "faces": {
+        "north": {"texture": "#wood"}, "south": {"texture": "#wood"},
+        "east": {"texture": "#rail"}, "west": {"texture": "#rail"},
+        "up": {"texture": "#wood"}, "down": {"texture": "#wood"}
+      }
+    },
+    {
+      "from": [0, 0, 8], "to": [16, 14, 12],
+      "faces": {
+        "north": {"texture": "#wood"}, "south": {"texture": "#wood"},
+        "east": {"texture": "#rail"}, "west": {"texture": "#rail"},
+        "up": {"texture": "#wood"}, "down": {"texture": "#wood"}
+      }
+    },
+    {
+      "from": [0, 0, 12], "to": [16, 16, 16],
+      "faces": {
+        "north": {"texture": "#wood"}, "south": {"texture": "#wood"},
+        "east": {"texture": "#rail"}, "west": {"texture": "#rail"},
+        "up": {"texture": "#wood"}, "down": {"texture": "#wood"}
+      }
+    },
+    {
+      "from": [0, 8, 0], "to": [1, 12, 16],
+      "faces": {"north": {"texture": "#rail"}, "east": {"texture": "#rail"}, "south": {"texture": "#rail"}, "west": {"texture": "#rail"}, "up": {"texture": "#rail"}}
+    },
+    {
+      "from": [15, 8, 0], "to": [16, 12, 16],
+      "faces": {"north": {"texture": "#rail"}, "east": {"texture": "#rail"}, "south": {"texture": "#rail"}, "west": {"texture": "#rail"}, "up": {"texture": "#rail"}}
+    }
+  ]
+}

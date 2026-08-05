@@ -1,0 +1,8 @@
+{
+  "parent": "pyrotechcomplement:block/sluice_lower",
+  "textures": {
+    "wood": "pyrotech:blocks/planks_tarred",
+    "rail": "minecraft:blocks/log_oak",
+    "particle": "pyrotech:blocks/planks_tarred"
+  }
+}

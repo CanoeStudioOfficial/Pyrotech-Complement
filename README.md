@@ -24,6 +24,8 @@ Optional integrations:
 - Granite Forging Table
 - Obsidian Forging Table
 - Ironclad Forging Table
+- Crude Sluice
+- Sluice
 - Primitive Bloomery
 
 The forging tables use Pyrotech hammer support. Pyrotech hammers, Pyrotech's hammer config list, tool class `hammer`, and ore dictionary hammers such as `toolHammer` are accepted.
@@ -150,6 +152,46 @@ Removal examples:
 ```zenscript
 mods.pyrotechcomplement.ForgingTable.removeRecipes(<pyrotech:material:19>);
 // mods.pyrotechcomplement.ForgingTable.removeAllRecipes();
+```
+
+### Sluice
+
+ZenClass:
+
+```zenscript
+mods.pyrotechcomplement.Sluice
+```
+
+Methods:
+
+```zenscript
+mods.pyrotechcomplement.Sluice.addRecipe(
+    string name,
+    IItemStack output,
+    IIngredient input
+);
+
+mods.pyrotechcomplement.Sluice.removeRecipes(IIngredient input);
+mods.pyrotechcomplement.Sluice.removeAllRecipes();
+```
+
+The sluice has two Pyrotech-style levels: `crude_sluice` and `sluice`. Built-in recipes accept OreDictionary inputs such as `oreIron`, plus gravel, sand, and soul sand. A custom recipe takes priority over the built-in fallback and produces its output deterministically.
+
+Example:
+
+```zenscript
+// Washing iron ore produces one iron nugget.
+mods.pyrotechcomplement.Sluice.addRecipe(
+    "iron_wash",
+    <minecraft:iron_nugget>,
+    <ore:oreIron>
+);
+
+// Disable the built-in gold-ore washing recipes.
+mods.pyrotechcomplement.Sluice.removeRecipes(<ore:oreGold>);
+
+// Remove all custom and automatic sluice recipes.
+// mods.pyrotechcomplement.Sluice.removeAllRecipes();
 ```
 
 ### Stone Oven

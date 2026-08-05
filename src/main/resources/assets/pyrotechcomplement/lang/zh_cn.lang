@@ -14,3 +14,5 @@ gui.pyrotechcomplement.top.primitive_bloomery.unformed=结构未成型
 gui.pyrotechcomplement.top.primitive_bloomery.capacity=容量：%d / %d
 gui.pyrotechcomplement.top.primitive_bloomery.time=时间：%s / %s
 gui.pyrotechcomplement.top.primitive_bloomery.airflow=气流：+%d%%
+tile.pyrotechcomplement.sluice.name=洗矿槽
+tile.pyrotechcomplement.crude_sluice.name=简陋的洗矿槽

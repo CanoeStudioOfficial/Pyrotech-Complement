@@ -1,0 +1,8 @@
+{
+  "parent": "pyrotechcomplement:block/sluice_lower",
+  "textures": {
+    "wood": "pyrotech:blocks/drying_rack_crude",
+    "rail": "minecraft:blocks/log_oak",
+    "particle": "pyrotech:blocks/drying_rack_crude"
+  }
+}

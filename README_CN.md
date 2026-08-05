@@ -24,6 +24,8 @@ Pyrotech Complement 是一个 Minecraft 1.12.2 的 Pyrotech 附属模组。它�
 - 花岗岩锻造台
 - 黑曜石锻造台
 - 复合锻造台
+- 简陋的洗矿槽
+- 洗矿槽
 - 原始锻造炉
 
 锻造台使用 Pyrotech 的锤子体系。支持 Pyrotech 锤子、Pyrotech 锤子配置列表、工具类 `hammer`，以及矿辞锤子，例如 `toolHammer`。
@@ -150,6 +152,46 @@ mods.pyrotechcomplement.ForgingTable.addRecipe(
 ```zenscript
 mods.pyrotechcomplement.ForgingTable.removeRecipes(<pyrotech:material:19>);
 // mods.pyrotechcomplement.ForgingTable.removeAllRecipes();
+```
+
+### 洗矿槽
+
+ZenClass：
+
+```zenscript
+mods.pyrotechcomplement.Sluice
+```
+
+方法：
+
+```zenscript
+mods.pyrotechcomplement.Sluice.addRecipe(
+    string name,
+    IItemStack output,
+    IIngredient input
+);
+
+mods.pyrotechcomplement.Sluice.removeRecipes(IIngredient input);
+mods.pyrotechcomplement.Sluice.removeAllRecipes();
+```
+
+洗矿槽分为 Pyrotech 风格的 `crude_sluice`（简陋的洗矿槽）和 `sluice`（洗矿槽）两个等级。内置配方支持 `oreIron` 等矿辞输入，也支持砂砾、沙子和灵魂沙。自定义配方优先于内置的自动矿辞配方，并会稳定产出指定物品。
+
+示例：
+
+```zenscript
+// 洗矿铁矿时固定产出 1 个铁粒。
+mods.pyrotechcomplement.Sluice.addRecipe(
+    "iron_wash",
+    <minecraft:iron_nugget>,
+    <ore:oreIron>
+);
+
+// 禁用内置的金矿洗矿配方。
+mods.pyrotechcomplement.Sluice.removeRecipes(<ore:oreGold>);
+
+// 移除所有自定义和自动洗矿配方。
+// mods.pyrotechcomplement.Sluice.removeAllRecipes();
 ```
 
 ### 石炉
