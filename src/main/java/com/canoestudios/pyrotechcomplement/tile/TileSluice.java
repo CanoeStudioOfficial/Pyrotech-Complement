@@ -247,7 +247,24 @@ public class TileSluice
       return;
     }
 
-    BlockPos outputPos = this.getWaterOutputPos();
+    IBlockState state = this.world.getBlockState(this.pos);
+    if (!(state.getBlock() instanceof BlockSluice)
+        || !state.getValue(BlockSluice.UPPER)) {
+      return;
+    }
+
+    this.removeOutputWater(state, this.pos);
+  }
+
+  public void removeOutputWater(IBlockState sluiceState, BlockPos sluicePos) {
+
+    if (this.world == null || this.world.isRemote
+        || !(sluiceState.getBlock() instanceof BlockSluice)
+        || !sluiceState.getValue(BlockSluice.UPPER)) {
+      return;
+    }
+
+    BlockPos outputPos = BlockSluice.getFluidOutputPos(sluiceState, sluicePos);
     if (isWater(this.world.getBlockState(outputPos))) {
       this.world.setBlockToAir(outputPos);
     }
@@ -305,9 +322,19 @@ public class TileSluice
     return BlockSluice.getFluidOutputPos(this.world.getBlockState(this.pos), this.pos);
   }
 
-  private BlockPos getWaterInputPos() {
+  public BlockPos getWaterInputPos() {
 
     return this.pos.up().offset(this.getFacing().getOpposite());
+  }
+
+  public boolean hasWaterFlow() {
+
+    if (this.world == null) {
+      return false;
+    }
+
+    return isWater(this.world.getBlockState(this.getWaterInputPos()))
+        && isWater(this.world.getBlockState(this.getWaterOutputPos()));
   }
 
   private State getRepresentativeState() {

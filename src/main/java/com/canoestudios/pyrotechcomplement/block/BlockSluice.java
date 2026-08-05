@@ -91,7 +91,7 @@ public class BlockSluice
   @Override
   public BlockRenderLayer getRenderLayer() {
 
-    // The crude tier reuses Pyrotech's drying-rack texture, which has alpha.
+    // Keep the thin, non-full block model in the cutout render layer.
     return BlockRenderLayer.CUTOUT;
   }
 
@@ -147,10 +147,23 @@ public class BlockSluice
   public void breakBlock(World world, BlockPos pos, IBlockState state) {
 
     if (!world.isRemote) {
+      BlockPos otherPos = getOtherPartPos(pos, state);
+      IBlockState otherState = world.getBlockState(otherPos);
+
+      // Removing either half must remove the other half as well. The second
+      // half is cleared directly so it does not drop a duplicate sluice item.
+      if (otherState.getBlock() == this
+          && otherState.getValue(FACING) == state.getValue(FACING)
+          && otherState.getValue(UPPER) != state.getValue(UPPER)) {
+        world.setBlockToAir(otherPos);
+      }
+
       if (state.getValue(UPPER)) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileSluice) {
-          ((TileSluice) tileEntity).removeOutputWater();
+          // During breakBlock the world state at pos is already air, so pass
+          // the original state instead of making the tile entity read it.
+          ((TileSluice) tileEntity).removeOutputWater(state, pos);
           ((TileSluice) tileEntity).dropContents();
         }
       }
@@ -158,6 +171,13 @@ public class BlockSluice
     }
 
     super.breakBlock(world, pos, state);
+  }
+
+  private static BlockPos getOtherPartPos(BlockPos pos, IBlockState state) {
+
+    return state.getValue(UPPER)
+        ? pos.offset(state.getValue(FACING))
+        : pos.offset(state.getValue(FACING).getOpposite());
   }
 
   @Override

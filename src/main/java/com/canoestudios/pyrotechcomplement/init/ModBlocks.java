@@ -6,6 +6,7 @@ import com.canoestudios.pyrotechcomplement.block.BlockLoom;
 import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomery;
 import com.canoestudios.pyrotechcomplement.block.BlockPrimitiveBloomeryMolten;
 import com.canoestudios.pyrotechcomplement.block.BlockSluice;
+import com.canoestudios.pyrotechcomplement.item.ItemSluice;
 import com.canoestudios.pyrotechcomplement.tile.TileForgingTable;
 import com.canoestudios.pyrotechcomplement.tile.TileLoom;
 import com.canoestudios.pyrotechcomplement.tile.TilePrimitiveBloomery;
@@ -54,8 +55,8 @@ public final class ModBlocks {
     registerItemBlock(registry, FORGING_TABLE_OBSIDIAN);
     registerItemBlock(registry, FORGING_TABLE_IRONCLAD);
     registerItemBlock(registry, PRIMITIVE_BLOOMERY);
-    registerItemBlock(registry, CRUDE_SLUICE);
-    registerItemBlock(registry, SLUICE);
+    registerSluiceItem(registry, CRUDE_SLUICE);
+    registerSluiceItem(registry, SLUICE);
   }
 
   private static void registerItemBlock(IForgeRegistry<Item> registry, Block block) {
@@ -64,6 +65,14 @@ public final class ModBlocks {
     itemBlock.setRegistryName(block.getRegistryName());
     itemBlock.setCreativeTab(ModCreativeTabs.PYROTECH_COMPLEMENT);
     registry.register(itemBlock);
+  }
+
+  private static void registerSluiceItem(IForgeRegistry<Item> registry, BlockSluice block) {
+
+    ItemSluice item = new ItemSluice(block);
+    item.setRegistryName(block.getRegistryName());
+    item.setCreativeTab(ModCreativeTabs.PYROTECH_COMPLEMENT);
+    registry.register(item);
   }
 
   public static void registerTileEntities() {
