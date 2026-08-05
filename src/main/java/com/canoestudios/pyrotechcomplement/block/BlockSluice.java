@@ -12,6 +12,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -84,6 +85,14 @@ public class BlockSluice
   public boolean isFullCube(IBlockState state) {
 
     return false;
+  }
+
+  @Nonnull
+  @Override
+  public BlockRenderLayer getRenderLayer() {
+
+    // The crude tier reuses Pyrotech's drying-rack texture, which has alpha.
+    return BlockRenderLayer.CUTOUT;
   }
 
   @Override

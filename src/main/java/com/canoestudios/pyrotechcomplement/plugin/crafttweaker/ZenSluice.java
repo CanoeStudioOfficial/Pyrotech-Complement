@@ -15,16 +15,23 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class ZenSluice {
 
   /**
-   * Adds a deterministic CraftTweaker recipe. Custom recipes take priority
-   * over the built-in OreDictionary based fallback recipes.
+   * Adds a CraftTweaker recipe. Custom recipes take priority over the built-in
+   * OreDictionary based fallback recipes; the overload with chance can fail.
    */
   @ZenMethod
   public static void addRecipe(String name, IItemStack output, IIngredient input) {
 
+    addRecipe(name, output, input, 1.0f);
+  }
+
+  @ZenMethod
+  public static void addRecipe(String name, IItemStack output, IIngredient input, float chance) {
+
     CraftTweaker.LATE_ACTIONS.add(new AddRecipe(
         name,
         CraftTweakerMC.getItemStack(output),
-        CraftTweakerMC.getIngredient(input)
+        CraftTweakerMC.getIngredient(input),
+        chance
     ));
   }
 
@@ -46,18 +53,20 @@ public class ZenSluice {
     private final String name;
     private final ItemStack output;
     private final Ingredient input;
+    private final float chance;
 
-    private AddRecipe(String name, ItemStack output, Ingredient input) {
+    private AddRecipe(String name, ItemStack output, Ingredient input, float chance) {
 
       this.name = name;
       this.output = output;
       this.input = input;
+      this.chance = chance;
     }
 
     @Override
     public void apply() {
 
-      SluiceRecipe.addCustomRecipe(this.name, this.output, this.input);
+      SluiceRecipe.addCustomRecipe(this.name, this.output, this.input, this.chance);
     }
 
     @Override

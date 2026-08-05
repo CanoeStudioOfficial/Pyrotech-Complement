@@ -193,7 +193,7 @@ public class TileSluice
         continue;
       }
 
-      ItemStack output = SluiceRecipe.rollOutput(input, this.world.rand);
+      ItemStack output = SluiceRecipe.rollOutput(input, this.world.rand, this.isCrudeTier());
       if (output != null && !output.isEmpty()) {
         this.spawnOutput(output);
       }
@@ -286,6 +286,13 @@ public class TileSluice
       return CRUDE_PROCESS_TICKS;
     }
     return NORMAL_PROCESS_TICKS;
+  }
+
+  private boolean isCrudeTier() {
+
+    IBlockState state = this.world.getBlockState(this.pos);
+    return state.getBlock() instanceof BlockSluice
+        && ((BlockSluice) state.getBlock()).getTier() == BlockSluice.Tier.CRUDE;
   }
 
   public EnumFacing getFacing() {

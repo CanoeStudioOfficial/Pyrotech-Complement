@@ -171,11 +171,20 @@ mods.pyrotechcomplement.Sluice.addRecipe(
     IIngredient input
 );
 
+mods.pyrotechcomplement.Sluice.addRecipe(
+    string name,
+    IItemStack output,
+    IIngredient input,
+    float chance
+);
+
 mods.pyrotechcomplement.Sluice.removeRecipes(IIngredient input);
 mods.pyrotechcomplement.Sluice.removeAllRecipes();
 ```
 
-洗矿槽分为 Pyrotech 风格的 `crude_sluice`（简陋的洗矿槽）和 `sluice`（洗矿槽）两个等级。内置配方支持 `oreIron` 等矿辞输入，也支持砂砾、沙子和灵魂沙。自定义配方优先于内置的自动矿辞配方，并会稳定产出指定物品。
+洗矿槽分为 Pyrotech 风格的 `crude_sluice`（简陋的洗矿槽）和 `sluice`（洗矿槽）两个等级。内置配方支持 `oreIron` 等矿辞输入，也支持砂砾、沙子和灵魂沙。自定义配方优先于内置的自动矿辞配方。三参数写法为固定产出；带 `chance` 的写法只设置当前输入的产出概率，范围为 `0.0` 到 `1.0`。
+
+简陋的洗矿槽容量为 16 个输入，每个物品需要 200 tick 处理；内置自动矿石或矿石沉积物配方有 25% 的等级失败率。普通洗矿槽容量为 32 个输入，每个物品需要 100 tick 处理，并且没有这项等级失败。使用带 `chance` 的 CraftTweaker 配方后，会替换该输入的内置逻辑，并且简陋/普通两个等级都按该矿自己的概率判定。
 
 示例：
 
@@ -185,6 +194,21 @@ mods.pyrotechcomplement.Sluice.addRecipe(
     "iron_wash",
     <minecraft:iron_nugget>,
     <ore:oreIron>
+);
+
+// 每种矿石分别设置产出概率，失败时输入仍会被消耗。
+mods.pyrotechcomplement.Sluice.addRecipe(
+    "iron_wash_chance",
+    <minecraft:iron_nugget>,
+    <ore:oreIron>,
+    0.60
+);
+
+mods.pyrotechcomplement.Sluice.addRecipe(
+    "gold_wash_chance",
+    <minecraft:gold_nugget>,
+    <ore:oreGold>,
+    0.20
 );
 
 // 禁用内置的金矿洗矿配方。

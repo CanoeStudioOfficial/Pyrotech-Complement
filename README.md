@@ -171,11 +171,20 @@ mods.pyrotechcomplement.Sluice.addRecipe(
     IIngredient input
 );
 
+mods.pyrotechcomplement.Sluice.addRecipe(
+    string name,
+    IItemStack output,
+    IIngredient input,
+    float chance
+);
+
 mods.pyrotechcomplement.Sluice.removeRecipes(IIngredient input);
 mods.pyrotechcomplement.Sluice.removeAllRecipes();
 ```
 
-The sluice has two Pyrotech-style levels: `crude_sluice` and `sluice`. Built-in recipes accept OreDictionary inputs such as `oreIron`, plus gravel, sand, and soul sand. A custom recipe takes priority over the built-in fallback and produces its output deterministically.
+The sluice has two Pyrotech-style levels: `crude_sluice` and `sluice`. Built-in recipes accept OreDictionary inputs such as `oreIron`, plus gravel, sand, and soul sand. A custom recipe takes priority over the built-in fallback. The three-argument form is deterministic; the `chance` overload sets the output chance for that input only, from `0.0` to `1.0`.
+
+The crude sluice holds 16 inputs and takes 200 ticks per item. Its built-in automatic ore or mineral-deposit recipes have a 25% processing failure chance. The normal sluice holds 32 inputs, takes 100 ticks per item, and does not have this tier failure. A CraftTweaker recipe with a `chance` value replaces that input's automatic behavior on both tiers, so each ore can be tuned independently.
 
 Example:
 
@@ -185,6 +194,21 @@ mods.pyrotechcomplement.Sluice.addRecipe(
     "iron_wash",
     <minecraft:iron_nugget>,
     <ore:oreIron>
+);
+
+// Set each ore's output chance independently. The input is consumed even when it fails.
+mods.pyrotechcomplement.Sluice.addRecipe(
+    "iron_wash_chance",
+    <minecraft:iron_nugget>,
+    <ore:oreIron>,
+    0.60
+);
+
+mods.pyrotechcomplement.Sluice.addRecipe(
+    "gold_wash_chance",
+    <minecraft:gold_nugget>,
+    <ore:oreGold>,
+    0.20
 );
 
 // Disable the built-in gold-ore washing recipes.

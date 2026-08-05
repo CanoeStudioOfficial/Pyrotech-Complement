@@ -23,6 +23,8 @@ import java.util.Random;
 public final class SluiceRecipe {
 
   public static final int DEFAULT_PROCESSING_TICKS = 100;
+  /** The built-in crude-tier penalty. CraftTweaker recipes use their own per-input chance. */
+  private static final float CRUDE_MINERAL_FAILURE_CHANCE = 0.25f;
   private static final float ORE_CHANCE = 0.55f;
   private static final float LOOSE_ROCK_CHANCE = 0.775f;
   private static final float GEM_CHANCE = 0.784f;
@@ -32,7 +34,12 @@ public final class SluiceRecipe {
 
   public static void addCustomRecipe(String name, ItemStack output, Ingredient input) {
 
-    CUSTOM_RECIPES.add(new CustomRecipe(name, output, input));
+    addCustomRecipe(name, output, input, 1.0f);
+  }
+
+  public static void addCustomRecipe(String name, ItemStack output, Ingredient input, float chance) {
+
+    CUSTOM_RECIPES.add(new CustomRecipe(name, output, input, clampChance(chance)));
   }
 
   public static void removeRecipes(Ingredient input) {
@@ -65,12 +72,6 @@ public final class SluiceRecipe {
       return false;
     }
 
-    for (int id : OreDictionary.getOreIDs(stack)) {
-      if (OreDictionary.getOreName(id).toLowerCase(Locale.ROOT).startsWith("ore")) {
-        return true;
-      }
-    }
-
     Item item = stack.getItem();
     if (item == Item.getItemFromBlock(Blocks.GRAVEL)
         || item == Item.getItemFromBlock(Blocks.SAND)
@@ -78,23 +79,28 @@ public final class SluiceRecipe {
       return true;
     }
 
-    ResourceLocation registryName = item.getRegistryName();
-    if (registryName == null) {
-      return false;
-    }
-
-    String path = registryName.getPath().toLowerCase(Locale.ROOT);
-    return path.contains("deposit") || path.startsWith("ore") || path.contains("/ore") || path.contains("_ore");
+    return isAutomaticMineralInput(stack);
   }
 
   @Nullable
   public static ItemStack rollOutput(ItemStack input, Random random) {
 
+    return rollOutput(input, random, false);
+  }
+
+  @Nullable
+  public static ItemStack rollOutput(ItemStack input, Random random, boolean crudeTier) {
+
     CustomRecipe customRecipe = findCustomRecipe(input);
     if (customRecipe != null) {
-      return customRecipe.getOutput();
+      return customRecipe.getOutput(random);
     }
     if (!isValidInput(input)) {
+      return null;
+    }
+
+    boolean mineralInput = isAutomaticMineralInput(input);
+    if (mineralInput && crudeTier && random.nextFloat() < CRUDE_MINERAL_FAILURE_CHANCE) {
       return null;
     }
 
@@ -103,7 +109,7 @@ public final class SluiceRecipe {
 
     if (roll < ORE_CHANCE) {
       ItemStack oreOutput = findOreOutput(material);
-      return oreOutput.isEmpty() ? null : oreOutput;
+      return oreOutput.isEmpty() ? getMineralFallback(mineralInput, material) : oreOutput;
     }
 
     if (roll < LOOSE_ROCK_CHANCE) {
@@ -115,10 +121,46 @@ public final class SluiceRecipe {
 
     if (roll < GEM_CHANCE) {
       ItemStack gemOutput = findFirst("gem" + capitalize(material));
-      return gemOutput.isEmpty() ? null : gemOutput;
+      return gemOutput.isEmpty() ? getMineralFallback(mineralInput, material) : gemOutput;
     }
 
-    return null;
+    return getMineralFallback(mineralInput, material);
+  }
+
+  @Nullable
+  private static ItemStack getMineralFallback(boolean mineralInput, String material) {
+
+    if (!mineralInput) {
+      return null;
+    }
+
+    ItemStack oreOutput = findOreOutput(material);
+    return oreOutput.isEmpty() ? new ItemStack(Blocks.GRAVEL) : oreOutput;
+  }
+
+  private static boolean isAutomaticMineralInput(ItemStack stack) {
+
+    for (int id : OreDictionary.getOreIDs(stack)) {
+      if (OreDictionary.getOreName(id).toLowerCase(Locale.ROOT).startsWith("ore")) {
+        return true;
+      }
+    }
+
+    ResourceLocation registryName = stack.getItem().getRegistryName();
+    if (registryName == null) {
+      return false;
+    }
+
+    String path = registryName.getPath().toLowerCase(Locale.ROOT);
+    return path.contains("deposit") || path.startsWith("ore") || path.contains("/ore") || path.contains("_ore");
+  }
+
+  private static float clampChance(float chance) {
+
+    if (Float.isNaN(chance)) {
+      return 0.0f;
+    }
+    return Math.max(0.0f, Math.min(1.0f, chance));
   }
 
   private static boolean isDisabled(ItemStack stack) {
@@ -147,12 +189,14 @@ public final class SluiceRecipe {
     private final String name;
     private final ItemStack output;
     private final Ingredient input;
+    private final float chance;
 
-    private CustomRecipe(String name, ItemStack output, Ingredient input) {
+    private CustomRecipe(String name, ItemStack output, Ingredient input, float chance) {
 
       this.name = name;
       this.output = output.copy();
       this.input = input;
+      this.chance = chance;
     }
 
     private boolean matches(ItemStack stack) {
@@ -170,9 +214,10 @@ public final class SluiceRecipe {
       return false;
     }
 
-    private ItemStack getOutput() {
+    @Nullable
+    private ItemStack getOutput(Random random) {
 
-      return this.output.copy();
+      return random.nextFloat() < this.chance ? this.output.copy() : null;
     }
   }
 
