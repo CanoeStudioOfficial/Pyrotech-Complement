@@ -19,11 +19,9 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class ZenLoom {
 
   @ZenMethod
-  public static void addRecipe(String name, IItemStack output, IIngredient input, int inputCount, int steps, @Optional String texture) {
+  public static void addRecipe(String name, IItemStack output, IIngredient input, int inputCount, int steps, @Optional String renderType) {
 
-    ResourceLocation textureLocation = texture == null || texture.isEmpty()
-        ? new ResourceLocation("pyrotech", "blocks/drying_rack_crude")
-        : new ResourceLocation(texture);
+    ResourceLocation textureLocation = LoomRecipe.resolveTexture(renderType);
 
     CraftTweaker.LATE_ACTIONS.add(new AddRecipe(
         name,

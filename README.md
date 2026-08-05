@@ -53,7 +53,7 @@ mods.pyrotechcomplement.Loom.addRecipe(
     IIngredient input,
     int inputCount,
     int steps,
-    @Optional string texture
+    @Optional string renderType
 );
 
 mods.pyrotechcomplement.Loom.removeRecipes(IIngredient output);
@@ -73,18 +73,34 @@ mods.pyrotechcomplement.Loom.addRecipe(
     "minecraft:blocks/wool_colored_white"
 );
 
-// Texture is optional. If omitted, a Pyrotech drying rack texture is used.
+// Choose a named internal rendering style. The plant-fiber style renders
+// Pyrotech's thatch-like fiber texture inside the loom.
 mods.pyrotechcomplement.Loom.addRecipe(
     "twine_from_fiber",
     <pyrotech:material:14>,
     <pyrotech:material:12>,
     4,
-    6
+    6,
+    "plant_fiber"
 );
+
+// Available named styles include:
+// "line" / "string" / "yarn" / "wool" -> white thread/fabric rendering
+// "plant" / "fiber" / "plant_fiber" -> plant-fiber rendering
+// "cloth" / "fabric" / "leather" -> cloth rendering
+// "crude" / "drying_rack" -> Pyrotech crude drying-rack rendering
+// A full 1.12 block-atlas path is also accepted, for example:
+// "minecraft:blocks/wool_colored_white"
 
 mods.pyrotechcomplement.Loom.removeRecipes(<minecraft:wool>);
 // mods.pyrotechcomplement.Loom.removeAllRecipes();
 ```
+
+The loom now uses a TFC-style block-entity renderer. While weaving, each input
+piece is shown as a separate animated strip inside the frame; the finished
+fabric remains visible until the output is collected. The `renderType` value is
+stored with the recipe, so crude looms and normal looms use the same selected
+material rendering.
 
 ### Forging Table
 

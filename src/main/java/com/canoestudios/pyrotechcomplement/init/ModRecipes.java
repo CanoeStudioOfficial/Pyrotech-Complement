@@ -52,7 +52,7 @@ public final class ModRecipes {
         Ingredient.fromStacks(new ItemStack(com.codetaylor.mc.pyrotech.modules.core.ModuleCore.Items.MATERIAL, 1, ItemMaterial.EnumType.PLANT_FIBERS.getMeta())),
         4,
         6,
-        new ResourceLocation("pyrotech", "blocks/drying_rack_crude")
+        new ResourceLocation("pyrotech", "blocks/thatch")
     );
 
     register("wool_from_string",

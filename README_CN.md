@@ -53,7 +53,7 @@ mods.pyrotechcomplement.Loom.addRecipe(
     IIngredient input,
     int inputCount,
     int steps,
-    @Optional string texture
+    @Optional string renderType
 );
 
 mods.pyrotechcomplement.Loom.removeRecipes(IIngredient output);
@@ -73,18 +73,29 @@ mods.pyrotechcomplement.Loom.addRecipe(
     "minecraft:blocks/wool_colored_white"
 );
 
-// texture 是可选参数。不写时会使用默认的 Pyrotech 晾干架纹理。
+// 选择内部渲染类型。植物纤维类型会在织机内部显示 Pyrotech 的植物纤维纹理。
 mods.pyrotechcomplement.Loom.addRecipe(
     "twine_from_fiber",
     <pyrotech:material:14>,
     <pyrotech:material:12>,
     4,
-    6
+    6,
+    "plant_fiber"
 );
+
+// 可用的命名类型包括：
+// "line" / "string" / "yarn" / "wool" -> 白色线/布渲染
+// "plant" / "fiber" / "plant_fiber" -> 植物纤维渲染
+// "cloth" / "fabric" / "leather" -> 布料渲染
+// "crude" / "drying_rack" -> Pyrotech 简陋晾干架渲染
+// 也可以直接填写 1.12 方块图集路径，例如：
+// "minecraft:blocks/wool_colored_white"
 
 mods.pyrotechcomplement.Loom.removeRecipes(<minecraft:wool>);
 // mods.pyrotechcomplement.Loom.removeAllRecipes();
 ```
+
+织机现在使用 TFC 风格的方块实体渲染。织造过程中，每个输入物品会在框架内部显示为独立的动态织物条；成品完成后会一直显示，直到玩家取走输出。`renderType` 会随配方保存，所以简陋织机和普通织机都会使用配方选择的同一种内部渲染。
 
 ### 锻造台
 

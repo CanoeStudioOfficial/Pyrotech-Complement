@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -48,6 +49,8 @@ public class TileLoom
 
   @Nullable
   private LoomRecipe recipe;
+  @Nullable
+  private ResourceLocation lastTexture;
   private int progress;
   private long lastPushed;
 
@@ -78,6 +81,7 @@ public class TileLoom
           ItemStack inserted = heldItem.splitStack(1);
           this.inventory.setStackInSlot(SLOT_INPUT, inserted);
           this.recipe = matchingRecipe;
+          this.lastTexture = matchingRecipe.getTexture();
         }
         return true;
       }
@@ -200,10 +204,32 @@ public class TileLoom
     return this.inventory.getStackInSlot(SLOT_OUTPUT);
   }
 
+  @Nullable
+  public ResourceLocation getLastTexture() {
+
+    return this.lastTexture;
+  }
+
+  public float getAnimationOffset(float partialTicks) {
+
+    if (this.world == null || this.recipe == null) {
+      return 0.0f;
+    }
+
+    long age = this.world.getTotalWorldTime() - this.lastPushed;
+    if (age < 0 || age >= 20) {
+      return 0.0f;
+    }
+
+    float progress = (age + partialTicks) / 20.0f;
+    return (float) Math.sin(Math.PI * progress) * 0.035f;
+  }
+
   private void clearProgress() {
 
     this.progress = 0;
     this.recipe = null;
+    this.lastTexture = null;
     this.notifyBlockUpdate();
   }
 
@@ -211,6 +237,9 @@ public class TileLoom
 
     ItemStack input = this.inventory.getStackInSlot(SLOT_INPUT);
     this.recipe = input.isEmpty() ? null : LoomRecipe.getRecipe(input);
+    if (this.recipe != null) {
+      this.lastTexture = this.recipe.getTexture();
+    }
     if (this.recipe == null) {
       this.progress = 0;
     }
@@ -223,6 +252,9 @@ public class TileLoom
     compound.setTag("inventory", this.inventory.serializeNBT());
     compound.setInteger("progress", this.progress);
     compound.setLong("lastPushed", this.lastPushed);
+    if (this.lastTexture != null) {
+      compound.setString("lastTexture", this.lastTexture.toString());
+    }
     return compound;
   }
 
@@ -233,6 +265,9 @@ public class TileLoom
     this.inventory.deserializeNBT(compound.getCompoundTag("inventory"));
     this.progress = compound.getInteger("progress");
     this.lastPushed = compound.getLong("lastPushed");
+    this.lastTexture = compound.hasKey("lastTexture")
+        ? new ResourceLocation(compound.getString("lastTexture"))
+        : null;
     this.updateCachedRecipe();
   }
 

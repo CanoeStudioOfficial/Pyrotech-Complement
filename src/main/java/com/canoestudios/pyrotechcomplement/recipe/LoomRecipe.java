@@ -14,6 +14,8 @@ public class LoomRecipe
     extends IForgeRegistryEntry.Impl<LoomRecipe>
     implements IRecipeSingleOutput {
 
+  public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("pyrotech", "blocks/drying_rack_crude");
+
   @Nullable
   public static LoomRecipe getRecipe(ItemStack input) {
 
@@ -33,6 +35,48 @@ public class LoomRecipe
   public static boolean removeRecipes(Ingredient output) {
 
     return RecipeHelper.removeRecipesByOutput(ModRecipes.LOOM_RECIPES, output);
+  }
+
+  /**
+   * Resolves the CraftTweaker rendering selector. Named selectors keep common
+   * recipes readable, while a full resource location remains supported for
+   * pack-specific textures.
+   */
+  public static ResourceLocation resolveTexture(@Nullable String selector) {
+
+    if (selector == null || selector.trim().isEmpty()) {
+      return DEFAULT_TEXTURE;
+    }
+
+    String value = selector.trim();
+    String key = value.toLowerCase(java.util.Locale.ROOT).replace('-', '_').replace(' ', '_');
+    if (key.equals("line") || key.equals("string") || key.equals("thread")
+        || key.equals("yarn") || key.equals("wool")) {
+      return new ResourceLocation("minecraft", "blocks/wool_colored_white");
+    }
+    if (key.equals("plant") || key.equals("fiber") || key.equals("plant_fiber")
+        || key.equals("plant_fibers")) {
+      return new ResourceLocation("pyrotech", "blocks/thatch");
+    }
+    if (key.equals("cloth") || key.equals("fabric") || key.equals("leather")) {
+      return new ResourceLocation("pyrotech", "blocks/bag_top_cloth");
+    }
+    if (key.equals("crude") || key.equals("drying_rack") || key.equals("drying_rack_crude")) {
+      return DEFAULT_TEXTURE;
+    }
+
+    try {
+      ResourceLocation location = new ResourceLocation(value);
+      String path = location.getPath();
+      // TFC 1.21 names these textures "block/..."; Forge 1.12 block atlas
+      // entries use the older "blocks/..." path.
+      if (path.startsWith("block/")) {
+        path = "blocks/" + path.substring("block/".length());
+      }
+      return new ResourceLocation(location.getNamespace(), path);
+    } catch (RuntimeException ignored) {
+      return DEFAULT_TEXTURE;
+    }
   }
 
   private final ItemStack output;

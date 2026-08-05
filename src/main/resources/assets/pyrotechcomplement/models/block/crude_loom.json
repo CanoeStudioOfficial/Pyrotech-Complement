@@ -2,7 +2,6 @@
   "parent": "block/block",
   "textures": {
     "wood": "pyrotech:blocks/drying_rack_crude",
-    "fiber": "pyrotech:blocks/thatch",
     "particle": "pyrotech:blocks/drying_rack_crude"
   },
   "elements": [
@@ -52,14 +51,6 @@
         "west": {"uv": [0, 0, 2, 2], "texture": "#wood"},
         "up": {"uv": [0, 0, 16, 2], "texture": "#wood"},
         "down": {"uv": [0, 0, 16, 2], "texture": "#wood"}
-      }
-    },
-    {
-      "from": [3, 4, 9.02],
-      "to": [13, 13, 9.02],
-      "faces": {
-        "north": {"uv": [0, 0, 16, 16], "texture": "#fiber"},
-        "south": {"uv": [0, 0, 16, 16], "texture": "#fiber"}
       }
     }
   ],
