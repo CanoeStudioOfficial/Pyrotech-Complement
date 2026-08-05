@@ -56,30 +56,36 @@ public class JEIRecipeWrapperSluice
   public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
 
     String time = I18n.translateToLocalFormatted(
-        "gui.pyrotechcomplement.jei.sluice.time",
+        "gui.pyrotechcomplement.jei.sluice.time_short",
         SluiceRecipe.DEFAULT_PROCESSING_TICKS,
         SluiceRecipe.DEFAULT_PROCESSING_TICKS * 2
     );
-    minecraft.fontRenderer.drawString(time, 4, 30, 0xFF404040);
+    this.drawLine(minecraft, time, 30, recipeWidth);
 
     String result;
     if (this.automatic) {
-      result = I18n.translateToLocal("gui.pyrotechcomplement.jei.sluice.random");
+      result = I18n.translateToLocal("gui.pyrotechcomplement.jei.sluice.random_short");
     } else {
       result = I18n.translateToLocalFormatted(
-          "gui.pyrotechcomplement.jei.sluice.chance",
+          "gui.pyrotechcomplement.jei.sluice.chance_short",
           (int) (this.chance * 100.0f)
       );
     }
-    minecraft.fontRenderer.drawString(result, 4, 40, 0xFF404040);
+    this.drawLine(minecraft, result, 40, recipeWidth);
 
     if (this.mineral) {
       String failure = I18n.translateToLocalFormatted(
-          "gui.pyrotechcomplement.jei.sluice.crude_failure",
+          "gui.pyrotechcomplement.jei.sluice.crude_failure_short",
           25
       );
-      minecraft.fontRenderer.drawString(failure, 4, 50, 0xFF404040);
+      this.drawLine(minecraft, failure, 50, recipeWidth);
     }
+  }
+
+  private void drawLine(Minecraft minecraft, String text, int y, int recipeWidth) {
+
+    String clipped = minecraft.fontRenderer.trimStringToWidth(text, Math.max(1, recipeWidth - 8));
+    minecraft.fontRenderer.drawString(clipped, 4, y, 0xFF404040);
   }
 
   @Nullable

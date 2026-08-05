@@ -205,10 +205,19 @@ public final class SluiceRecipe {
 
   private static boolean isAutomaticMineralInput(ItemStack stack) {
 
-    for (int id : OreDictionary.getOreIDs(stack)) {
-      if (OreDictionary.getOreName(id).toLowerCase(Locale.ROOT).startsWith("ore")) {
-        return true;
+    if (stack.isEmpty() || stack.getItem() == null) {
+      return false;
+    }
+
+    try {
+      for (int id : OreDictionary.getOreIDs(stack)) {
+        if (OreDictionary.getOreName(id).toLowerCase(Locale.ROOT).startsWith("ore")) {
+          return true;
+        }
       }
+    } catch (IllegalArgumentException ignored) {
+      // Some modded items expose an invalid metadata-0 stack to the registry.
+      // They must not abort JEI's complete recipe registration pass.
     }
 
     ResourceLocation registryName = stack.getItem().getRegistryName();

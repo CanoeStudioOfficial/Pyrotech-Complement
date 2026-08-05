@@ -452,7 +452,7 @@ mods.pyrotech.Bloomery.createBloomeryBuilder(
 
 ## JEI and TOP
 
-JEI recipe categories are available for the loom, forging table, primitive bloomery, and both sluice tiers. The sluice category shows representative inputs, possible random outputs, normal/crude processing times, and CraftTweaker output chances.
+JEI recipe categories are available for the loom, forging table, primitive bloomery, quern, and both sluice tiers. The sluice category shows representative inputs, possible random outputs, normal/crude processing times, and CraftTweaker output chances. The quern category shows its input, required handstone, output, and grinding time. The handstone and quern crafting recipes are also available through the normal JEI crafting view.
 
 The One Probe displays capacity, water-flow status, active input, and progress for both sluice tiers, as well as the existing loom, forging table, primitive bloomery, and quern information. The quern provider shows the installed handstone, input/output, and grinding progress.
 

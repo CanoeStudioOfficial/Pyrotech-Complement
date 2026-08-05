@@ -5,14 +5,17 @@ import com.canoestudios.pyrotechcomplement.init.ModRecipes;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryForgingTable;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryLoom;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryPrimitiveBloomery;
+import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryQuern;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategorySluice;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperForgingTable;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperLoom;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperPrimitiveBloomery;
+import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperQuern;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperSluice;
 import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
+import com.canoestudios.pyrotechcomplement.recipe.QuernRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.SluiceRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
@@ -39,6 +42,7 @@ public class PluginJEI
         new JEIRecipeCategoryLoom(guiHelper),
         new JEIRecipeCategoryForgingTable(guiHelper),
         new JEIRecipeCategoryPrimitiveBloomery(guiHelper),
+        new JEIRecipeCategoryQuern(guiHelper),
         new JEIRecipeCategorySluice(guiHelper)
     );
   }
@@ -66,6 +70,11 @@ public class PluginJEI
     registry.addRecipeCatalyst(new ItemStack(ModBlocks.PRIMITIVE_BLOOMERY), JEIRecipeCategoryPrimitiveBloomery.UID);
     registry.handleRecipes(PrimitiveBloomeryRecipe.class, JEIRecipeWrapperPrimitiveBloomery::new, JEIRecipeCategoryPrimitiveBloomery.UID);
     registry.addRecipes(this.getPrimitiveBloomeryRecipes(), JEIRecipeCategoryPrimitiveBloomery.UID);
+
+    registry.addRecipeCatalyst(new ItemStack(ModBlocks.QUERN), JEIRecipeCategoryQuern.UID);
+    registry.addRecipeCatalyst(new ItemStack(ModBlocks.HANDSTONE), JEIRecipeCategoryQuern.UID);
+    registry.handleRecipes(QuernRecipe.class, JEIRecipeWrapperQuern::new, JEIRecipeCategoryQuern.UID);
+    registry.addRecipes(this.getQuernRecipes(), JEIRecipeCategoryQuern.UID);
 
     registry.addRecipeCatalyst(new ItemStack(ModBlocks.CRUDE_SLUICE), JEIRecipeCategorySluice.UID);
     registry.addRecipeCatalyst(new ItemStack(ModBlocks.SLUICE), JEIRecipeCategorySluice.UID);
@@ -110,5 +119,18 @@ public class PluginJEI
     }
 
     return new ArrayList<>(ModRecipes.PRIMITIVE_BLOOMERY_RECIPES.getValuesCollection());
+  }
+
+  private List<QuernRecipe> getQuernRecipes() {
+
+    if (ModRecipes.QUERN_RECIPES == null) {
+      ModRecipes.initRegistry();
+    }
+
+    if (ModRecipes.QUERN_RECIPES == null) {
+      return Collections.emptyList();
+    }
+
+    return new ArrayList<>(ModRecipes.QUERN_RECIPES.getValuesCollection());
   }
 }
