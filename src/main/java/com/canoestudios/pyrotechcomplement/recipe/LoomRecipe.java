@@ -58,7 +58,10 @@ public class LoomRecipe
         || key.equals("plant_fibers")) {
       return new ResourceLocation("pyrotech", "blocks/thatch");
     }
-    if (key.equals("cloth") || key.equals("fabric") || key.equals("leather")) {
+    if (key.equals("leather") || key.equals("leather_sheet")) {
+      return new ResourceLocation("pyrotech", "items/leather_sheet");
+    }
+    if (key.equals("cloth") || key.equals("fabric")) {
       return new ResourceLocation("pyrotech", "blocks/bag_top_cloth");
     }
     if (key.equals("crude") || key.equals("drying_rack") || key.equals("drying_rack_crude")) {

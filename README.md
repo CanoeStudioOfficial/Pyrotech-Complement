@@ -87,7 +87,8 @@ mods.pyrotechcomplement.Loom.addRecipe(
 // Available named styles include:
 // "line" / "string" / "yarn" / "wool" -> white thread/fabric rendering
 // "plant" / "fiber" / "plant_fiber" -> plant-fiber rendering
-// "cloth" / "fabric" / "leather" -> cloth rendering
+// "cloth" / "fabric" -> cloth rendering
+// "leather" / "leather_sheet" -> Pyrotech leather-sheet rendering
 // "crude" / "drying_rack" -> Pyrotech crude drying-rack rendering
 // A full 1.12 block-atlas path is also accepted, for example:
 // "minecraft:blocks/wool_colored_white"

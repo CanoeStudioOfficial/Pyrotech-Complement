@@ -68,7 +68,7 @@ public final class ModRecipes {
         Ingredient.fromStacks(new ItemStack(Items.LEATHER)),
         2,
         8,
-        new ResourceLocation("pyrotech", "blocks/bag_top_cloth")
+        new ResourceLocation("pyrotech", "items/leather_sheet")
     );
 
     registerForgingTable("flint_shards_from_flint",

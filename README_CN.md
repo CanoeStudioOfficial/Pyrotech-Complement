@@ -86,7 +86,8 @@ mods.pyrotechcomplement.Loom.addRecipe(
 // 可用的命名类型包括：
 // "line" / "string" / "yarn" / "wool" -> 白色线/布渲染
 // "plant" / "fiber" / "plant_fiber" -> 植物纤维渲染
-// "cloth" / "fabric" / "leather" -> 布料渲染
+// "cloth" / "fabric" -> 布料渲染
+// "leather" / "leather_sheet" -> Pyrotech 皮革薄片渲染
 // "crude" / "drying_rack" -> Pyrotech 简陋晾干架渲染
 // 也可以直接填写 1.12 方块图集路径，例如：
 // "minecraft:blocks/wool_colored_white"
