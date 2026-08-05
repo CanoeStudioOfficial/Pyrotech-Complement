@@ -1,5 +1,6 @@
 package com.canoestudios.pyrotechcomplement.tile;
 
+import com.codetaylor.mc.athenaeum.util.ParticleHelper;
 import com.canoestudios.pyrotechcomplement.block.BlockSluice;
 import com.canoestudios.pyrotechcomplement.recipe.SluiceRecipe;
 import com.codetaylor.mc.athenaeum.spi.TileEntityBase;
@@ -63,11 +64,28 @@ public class TileSluice
   @Override
   public void update() {
 
-    if (this.world == null || this.world.isRemote || !this.isUpperBlock()) {
+    if (this.world == null || !this.isUpperBlock()) {
       return;
     }
 
     State state = this.getRepresentativeState();
+    if (this.world.isRemote) {
+      if (state == State.BOTH
+          && this.hasInputItems()
+          && this.world.getTotalWorldTime() % 40 == 0) {
+        ParticleHelper.spawnProgressParticlesClient(
+            1,
+            this.pos.getX() + 0.5,
+            this.pos.getY() + 0.95,
+            this.pos.getZ() + 0.5,
+            0.45,
+            0.15,
+            0.45
+        );
+      }
+      return;
+    }
+
     if (state == State.INPUT_ONLY) {
       this.createOutputWater();
       state = this.getRepresentativeState();
@@ -89,6 +107,16 @@ public class TileSluice
       this.ticksRemaining = this.getProcessingTicks();
       this.notifyBlockUpdate();
     }
+  }
+
+  private boolean hasInputItems() {
+
+    for (int slot = 0; slot < this.inventory.getSlots(); slot++) {
+      if (!this.inventory.getStackInSlot(slot).isEmpty()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean onRightClick(EntityPlayer player, EnumHand hand) {
@@ -285,7 +313,7 @@ public class TileSluice
     return state.getBlock() instanceof BlockSluice && state.getValue(BlockSluice.UPPER);
   }
 
-  private int getCapacity() {
+  public int getCapacity() {
 
     IBlockState state = this.world.getBlockState(this.pos);
     if (state.getBlock() instanceof BlockSluice
@@ -295,7 +323,7 @@ public class TileSluice
     return MAX_SOIL;
   }
 
-  private int getProcessingTicks() {
+  public int getProcessingTicks() {
 
     IBlockState state = this.world.getBlockState(this.pos);
     if (state.getBlock() instanceof BlockSluice
@@ -322,19 +350,42 @@ public class TileSluice
     return BlockSluice.getFluidOutputPos(this.world.getBlockState(this.pos), this.pos);
   }
 
-  public BlockPos getWaterInputPos() {
+  public int getStoredInputCount() {
 
-    return this.pos.up().offset(this.getFacing().getOpposite());
+    int count = 0;
+    for (int slot = 0; slot < this.getCapacity(); slot++) {
+      if (!this.inventory.getStackInSlot(slot).isEmpty()) {
+        count++;
+      }
+    }
+    return count;
   }
 
-  public boolean hasWaterFlow() {
+  public ItemStack getFirstInput() {
 
-    if (this.world == null) {
-      return false;
+    for (int slot = 0; slot < this.getCapacity(); slot++) {
+      ItemStack stack = this.inventory.getStackInSlot(slot);
+      if (!stack.isEmpty()) {
+        return stack.copy();
+      }
     }
+    return ItemStack.EMPTY;
+  }
 
-    return isWater(this.world.getBlockState(this.getWaterInputPos()))
-        && isWater(this.world.getBlockState(this.getWaterOutputPos()));
+  public int getProgress() {
+
+    int total = this.getProcessingTicks();
+    return Math.max(0, Math.min(total, total - this.ticksRemaining));
+  }
+
+  public boolean isWaterReady() {
+
+    return this.getRepresentativeState() == State.BOTH;
+  }
+
+  private BlockPos getWaterInputPos() {
+
+    return this.pos.up().offset(this.getFacing().getOpposite());
   }
 
   private State getRepresentativeState() {

@@ -5,12 +5,15 @@ import com.canoestudios.pyrotechcomplement.init.ModRecipes;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryForgingTable;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryLoom;
 import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategoryPrimitiveBloomery;
+import com.canoestudios.pyrotechcomplement.plugin.jei.category.JEIRecipeCategorySluice;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperForgingTable;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperLoom;
 import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperPrimitiveBloomery;
+import com.canoestudios.pyrotechcomplement.plugin.jei.wrapper.JEIRecipeWrapperSluice;
 import com.canoestudios.pyrotechcomplement.recipe.ForgingTableRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.LoomRecipe;
 import com.canoestudios.pyrotechcomplement.recipe.PrimitiveBloomeryRecipe;
+import com.canoestudios.pyrotechcomplement.recipe.SluiceRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IModPlugin;
@@ -35,7 +38,8 @@ public class PluginJEI
     registry.addRecipeCategories(
         new JEIRecipeCategoryLoom(guiHelper),
         new JEIRecipeCategoryForgingTable(guiHelper),
-        new JEIRecipeCategoryPrimitiveBloomery(guiHelper)
+        new JEIRecipeCategoryPrimitiveBloomery(guiHelper),
+        new JEIRecipeCategorySluice(guiHelper)
     );
   }
 
@@ -62,6 +66,11 @@ public class PluginJEI
     registry.addRecipeCatalyst(new ItemStack(ModBlocks.PRIMITIVE_BLOOMERY), JEIRecipeCategoryPrimitiveBloomery.UID);
     registry.handleRecipes(PrimitiveBloomeryRecipe.class, JEIRecipeWrapperPrimitiveBloomery::new, JEIRecipeCategoryPrimitiveBloomery.UID);
     registry.addRecipes(this.getPrimitiveBloomeryRecipes(), JEIRecipeCategoryPrimitiveBloomery.UID);
+
+    registry.addRecipeCatalyst(new ItemStack(ModBlocks.CRUDE_SLUICE), JEIRecipeCategorySluice.UID);
+    registry.addRecipeCatalyst(new ItemStack(ModBlocks.SLUICE), JEIRecipeCategorySluice.UID);
+    registry.handleRecipes(SluiceRecipe.JeiRecipe.class, JEIRecipeWrapperSluice::new, JEIRecipeCategorySluice.UID);
+    registry.addRecipes(SluiceRecipe.getJeiRecipes(), JEIRecipeCategorySluice.UID);
   }
 
   private List<LoomRecipe> getLoomRecipes() {

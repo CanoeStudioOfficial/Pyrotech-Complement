@@ -421,9 +421,9 @@ mods.pyrotech.Bloomery.createBloomeryBuilder(
 
 ## JEI and TOP
 
-JEI recipe categories are available for the loom, forging table, and primitive bloomery. The primitive bloomery category shows ore input, fuel input, burn time, and output.
+JEI recipe categories are available for the loom, forging table, primitive bloomery, and both sluice tiers. The sluice category shows representative inputs, possible random outputs, normal/crude processing times, and CraftTweaker output chances.
 
-The One Probe displays active block progress and output previews for the loom, forging table, and primitive bloomery.
+The One Probe displays capacity, water-flow status, active input, and progress for both sluice tiers, as well as the existing loom, forging table, and primitive bloomery information.
 
 ## Build
 

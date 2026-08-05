@@ -7,14 +7,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import net.minecraft.item.crafting.Ingredient;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * A small OreDictionary based adapter for TFC-like sluice inputs. 1.12.2
@@ -57,6 +60,68 @@ public final class SluiceRecipe {
     CUSTOM_RECIPES.clear();
     DISABLED_INPUTS.clear();
     automaticRecipesEnabled = false;
+  }
+
+  /**
+   * Returns a client-friendly snapshot of the recipes that can be shown in JEI.
+   *
+   * <p>The sluice has random built-in outputs rather than one fixed output, so each
+   * entry contains every possible output for its representative input. CraftTweaker
+   * recipes are included before the automatic fallback recipes.</p>
+   */
+  public static List<JeiRecipe> getJeiRecipes() {
+
+    List<JeiRecipe> result = new ArrayList<>();
+    Set<String> seenInputs = new HashSet<>();
+
+    for (CustomRecipe recipe : CUSTOM_RECIPES) {
+      List<ItemStack> inputs = getMatchingStacks(recipe.input);
+      if (!inputs.isEmpty()) {
+        result.add(new JeiRecipe(
+            recipe.name,
+            inputs,
+            singletonOutput(recipe.output),
+            recipe.chance,
+            false,
+            false
+        ));
+        for (ItemStack input : inputs) {
+          seenInputs.add(getStackKey(input));
+        }
+      }
+    }
+
+    if (!automaticRecipesEnabled) {
+      return result;
+    }
+
+    addAutomaticJeiRecipe(result, seenInputs, "gravel", new ItemStack(Blocks.GRAVEL));
+    addAutomaticJeiRecipe(result, seenInputs, "sand", new ItemStack(Blocks.SAND));
+    addAutomaticJeiRecipe(result, seenInputs, "soul_sand", new ItemStack(Blocks.SOUL_SAND));
+
+    for (String oreName : OreDictionary.getOreNames()) {
+      if (!oreName.toLowerCase(Locale.ROOT).startsWith("ore") || oreName.length() <= 3) {
+        continue;
+      }
+
+      for (ItemStack stack : OreDictionary.getOres(oreName)) {
+        if (!stack.isEmpty() && isAutomaticMineralInput(stack)) {
+          addAutomaticJeiRecipe(result, seenInputs, "automatic_" + oreName, stack);
+          break;
+        }
+      }
+    }
+
+    // Some TFC-style deposits are identified by their registry path instead of an
+    // OreDictionary entry. Include one representative metadata-0 stack for those.
+    for (Item item : ForgeRegistries.ITEMS.getValuesCollection()) {
+      ItemStack stack = new ItemStack(item, 1, 0);
+      if (isAutomaticMineralInput(stack)) {
+        addAutomaticJeiRecipe(result, seenInputs, "automatic_" + item.getRegistryName(), stack);
+      }
+    }
+
+    return result;
   }
 
   public static boolean isValidInput(ItemStack stack) {
@@ -155,6 +220,122 @@ public final class SluiceRecipe {
     return path.contains("deposit") || path.startsWith("ore") || path.contains("/ore") || path.contains("_ore");
   }
 
+  private static void addAutomaticJeiRecipe(List<JeiRecipe> recipes, Set<String> seenInputs, String name, ItemStack input) {
+
+    if (input.isEmpty() || !isValidInput(input)) {
+      return;
+    }
+
+    CustomRecipe customRecipe = findCustomRecipe(input);
+    if (customRecipe != null || isDisabled(input)) {
+      return;
+    }
+
+    String key = getStackKey(input);
+    if (!seenInputs.add(key)) {
+      return;
+    }
+
+    List<ItemStack> outputs = getPossibleOutputs(input);
+    if (outputs.isEmpty()) {
+      seenInputs.remove(key);
+      return;
+    }
+
+    recipes.add(new JeiRecipe(
+        name,
+        singletonOutput(input),
+        outputs,
+        1.0f,
+        true,
+        isAutomaticMineralInput(input)
+    ));
+  }
+
+  private static List<ItemStack> getMatchingStacks(Ingredient ingredient) {
+
+    List<ItemStack> result = new ArrayList<>();
+    for (ItemStack stack : ingredient.getMatchingStacks()) {
+      if (!stack.isEmpty()) {
+        result.add(stack.copy());
+      }
+    }
+    return result;
+  }
+
+  public static List<ItemStack> getPossibleOutputs(ItemStack input) {
+
+    List<ItemStack> result = new ArrayList<>();
+    if (input.isEmpty()) {
+      return result;
+    }
+
+    CustomRecipe customRecipe = findCustomRecipe(input);
+    if (customRecipe != null) {
+      return singletonOutput(customRecipe.output);
+    }
+
+    if (!isValidInput(input)) {
+      return result;
+    }
+
+    String material = findMaterial(input);
+    ItemStack oreOutput = findOreOutput(material);
+
+    if (!oreOutput.isEmpty()) {
+      addUniqueOutput(result, oreOutput);
+    }
+
+    if (input.getItem() == Item.getItemFromBlock(Blocks.GRAVEL)) {
+      addUniqueOutput(result, new ItemStack(Items.FLINT));
+    } else if (isAutomaticMineralInput(input)) {
+      addUniqueOutput(result, new ItemStack(Blocks.GRAVEL));
+    }
+
+    ItemStack gemOutput = findFirst("gem" + capitalize(material));
+    if (!gemOutput.isEmpty()) {
+      gemOutput.setCount(1);
+      addUniqueOutput(result, gemOutput);
+    }
+
+    if (result.isEmpty() && input.getItem() == Item.getItemFromBlock(Blocks.SAND)) {
+      addUniqueOutput(result, new ItemStack(Blocks.GRAVEL));
+    }
+    if (result.isEmpty() && input.getItem() == Item.getItemFromBlock(Blocks.SOUL_SAND)) {
+      addUniqueOutput(result, new ItemStack(Blocks.GRAVEL));
+    }
+
+    return result;
+  }
+
+  private static void addUniqueOutput(List<ItemStack> outputs, ItemStack output) {
+
+    if (output.isEmpty()) {
+      return;
+    }
+
+    String key = getStackKey(output);
+    for (ItemStack existing : outputs) {
+      if (getStackKey(existing).equals(key)) {
+        return;
+      }
+    }
+    outputs.add(output.copy());
+  }
+
+  private static List<ItemStack> singletonOutput(ItemStack stack) {
+
+    List<ItemStack> result = new ArrayList<>(1);
+    result.add(stack.copy());
+    return result;
+  }
+
+  private static String getStackKey(ItemStack stack) {
+
+    ResourceLocation registryName = stack.getItem().getRegistryName();
+    return (registryName == null ? "unknown" : registryName.toString()) + ":" + stack.getMetadata();
+  }
+
   private static float clampChance(float chance) {
 
     if (Float.isNaN(chance)) {
@@ -218,6 +399,66 @@ public final class SluiceRecipe {
     private ItemStack getOutput(Random random) {
 
       return random.nextFloat() < this.chance ? this.output.copy() : null;
+    }
+  }
+
+  public static final class JeiRecipe {
+
+    private final String name;
+    private final List<ItemStack> inputs;
+    private final List<ItemStack> outputs;
+    private final float chance;
+    private final boolean automatic;
+    private final boolean mineral;
+
+    private JeiRecipe(String name, List<ItemStack> inputs, List<ItemStack> outputs, float chance,
+        boolean automatic, boolean mineral) {
+
+      this.name = name;
+      this.inputs = copyStacks(inputs);
+      this.outputs = copyStacks(outputs);
+      this.chance = chance;
+      this.automatic = automatic;
+      this.mineral = mineral;
+    }
+
+    public String getName() {
+
+      return this.name;
+    }
+
+    public List<ItemStack> getInputs() {
+
+      return copyStacks(this.inputs);
+    }
+
+    public List<ItemStack> getOutputs() {
+
+      return copyStacks(this.outputs);
+    }
+
+    public float getChance() {
+
+      return this.chance;
+    }
+
+    public boolean isAutomatic() {
+
+      return this.automatic;
+    }
+
+    public boolean isMineral() {
+
+      return this.mineral;
+    }
+
+    private static List<ItemStack> copyStacks(List<ItemStack> stacks) {
+
+      List<ItemStack> result = new ArrayList<>(stacks.size());
+      for (ItemStack stack : stacks) {
+        result.add(stack.copy());
+      }
+      return result;
     }
   }
 
