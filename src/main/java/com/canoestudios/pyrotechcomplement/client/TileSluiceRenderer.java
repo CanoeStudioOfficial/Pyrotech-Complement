@@ -28,44 +28,65 @@ public class TileSluiceRenderer
     }
 
     EnumFacing facing = tile.getFacing();
-    float rotation = getModelRotation(facing);
-    int rendered = 0;
-    for (int slot = 0; slot < TileSluice.MAX_SOIL && rendered < 6; slot++) {
+    float rotation = getItemRotation();
+
+    // TFC lays the inventory out as four columns along the two-block sluice.
+    // The upper tile entity owns all 32 slots, so the last rows intentionally
+    // continue across the lower half of the placed sluice.
+    GlStateManager.pushMatrix();
+    this.applySluiceTransform(facing, x, y, z);
+    for (int slot = 0; slot < tile.getCapacity(); slot++) {
       ItemStack stack = tile.getStackInSlot(slot);
       if (!stack.isEmpty()) {
-        double localZ = 0.22 + rendered * 0.12;
-        double localY = 0.67 + localZ * 0.22;
-        this.renderStack(stack, x, y, z, rotation, 0.5, localY, localZ, 0.42f);
-        rendered++;
+        int step = slot / 4;
+        int across = slot % 4;
+        float localX = 0.125f + 0.25f * across;
+        float localY = 0.96875f - 0.0125f - 0.125f * step;
+        float localZ = 0.15625f - 0.0125f + 0.25f * step;
+        this.renderStack(stack, localX, localY, localZ, rotation);
       }
     }
+    GlStateManager.popMatrix();
 
   }
 
-  private void renderStack(ItemStack stack, double x, double y, double z, float rotation,
-      double localX, double localY, double localZ, float scale) {
+  private void applySluiceTransform(EnumFacing facing, double x, double y, double z) {
+
+    // This is the 1.12.2 equivalent of TFC's PoseStack setup. It keeps the
+    // item grid aligned with the rotated sluice model and its two-block slope.
+    switch (facing) {
+      case NORTH:
+        GlStateManager.translate(x + 1.0, y, z + 1.0);
+        break;
+      case WEST:
+        GlStateManager.translate(x + 1.0, y, z);
+        GlStateManager.rotate(180.0f, 0.0f, 1.0f, 0.0f);
+        break;
+      case EAST:
+        GlStateManager.translate(x, y, z + 1.0);
+        GlStateManager.rotate(180.0f, 0.0f, 1.0f, 0.0f);
+        break;
+      case SOUTH:
+      default:
+        GlStateManager.translate(x, y, z);
+        break;
+    }
+    GlStateManager.rotate(facing.getHorizontalIndex() * 90.0f, 0.0f, 1.0f, 0.0f);
+  }
+
+  private void renderStack(ItemStack stack, float localX, float localY, float localZ, float rotation) {
 
     GlStateManager.pushMatrix();
-    GlStateManager.translate(x + 0.5, y, z + 0.5);
-    GlStateManager.rotate(rotation, 0, 1, 0);
-    GlStateManager.translate(localX - 0.5, localY, localZ - 0.5);
-    GlStateManager.scale(scale, scale, scale);
-    Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.GROUND);
+    GlStateManager.translate(localX, localY, localZ);
+    GlStateManager.scale(0.3f, 0.3f, 0.3f);
+    GlStateManager.rotate(rotation, 0.0f, 1.0f, 0.0f);
+    Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
     GlStateManager.popMatrix();
   }
 
-  private static float getModelRotation(EnumFacing facing) {
+  private static float getItemRotation() {
 
-    switch (facing) {
-      case EAST:
-        return 90;
-      case SOUTH:
-        return 180;
-      case WEST:
-        return 270;
-      default:
-        return 0;
-    }
+    return (float) (360.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL);
   }
 
 }
