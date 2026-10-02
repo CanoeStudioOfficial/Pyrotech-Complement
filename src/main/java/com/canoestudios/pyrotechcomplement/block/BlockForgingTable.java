@@ -29,8 +29,12 @@ public class BlockForgingTable
 
   public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
-  private static final AxisAlignedBB SHAPE_X = new AxisAlignedBB(3 / 16.0, 0, 0, 13 / 16.0, 10 / 16.0, 1);
-  private static final AxisAlignedBB SHAPE_Z = new AxisAlignedBB(0, 0, 3 / 16.0, 1, 10 / 16.0, 13 / 16.0);
+  // The visual model is based on TFC's anvil silhouette. Keep a single, stable
+  // selection/collision shape per axis instead of exposing the small decorative
+  // horns as separate collision boxes.
+  private static final double MODEL_HEIGHT = 11 / 16.0;
+  private static final AxisAlignedBB SHAPE_X = new AxisAlignedBB(3 / 16.0, 0, 0, 13 / 16.0, MODEL_HEIGHT, 1);
+  private static final AxisAlignedBB SHAPE_Z = new AxisAlignedBB(0, 0, 3 / 16.0, 1, MODEL_HEIGHT, 13 / 16.0);
 
   private final Style style;
 
@@ -58,7 +62,9 @@ public class BlockForgingTable
   @Override
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 
-    return state.getValue(FACING).getAxis() == EnumFacing.Axis.Z ? SHAPE_Z : SHAPE_X;
+    // The model is rotated a quarter turn for north/south, placing its long X
+    // axis along Z; east/west uses the unrotated long X axis.
+    return state.getValue(FACING).getAxis() == EnumFacing.Axis.Z ? SHAPE_X : SHAPE_Z;
   }
 
   @Override

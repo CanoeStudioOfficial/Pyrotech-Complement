@@ -1,10 +1,9 @@
 {
   "parent": "pyrotechcomplement:block/forging_table",
   "textures": {
-    "top": "minecraft:blocks/iron_block",
-    "top_side": "minecraft:blocks/iron_block",
-    "bottom_side": "minecraft:blocks/stone_slab_side",
-    "bottom": "minecraft:blocks/stone_slab_top",
+    "all": "minecraft:blocks/iron_block",
+    "base_side": "minecraft:blocks/stone",
+    "base_top": "minecraft:blocks/stone",
     "particle": "minecraft:blocks/iron_block"
   }
 }

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
@@ -14,6 +15,17 @@ import javax.annotation.Nonnull;
 
 public class TileForgingTableRenderer
     extends TileEntitySpecialRenderer<TileForgingTable> {
+
+  private static final float WORK_SURFACE_Y = 11 / 16.0f;
+  private static final float INPUT_SCALE = 0.46f;
+  private static final float OUTPUT_SCALE = 0.54f;
+
+  // Coordinates are in the unrotated TFC-anvil model space. The model's long
+  // axis is X, so the two inputs sit next to each other along that axis.
+  private static final double INPUT_X = 0.42;
+  private static final double SECONDARY_INPUT_X = 0.70;
+  private static final double WORK_SURFACE_CENTER_X = 0.5625;
+  private static final double CENTER_Z = 0.5;
 
   @Override
   public void render(@Nonnull TileForgingTable tile, double x, double y, double z, float partialTicks,
@@ -23,19 +35,20 @@ public class TileForgingTableRenderer
       return;
     }
 
-    if (!(tile.getWorld().getBlockState(tile.getPos()).getBlock() instanceof BlockForgingTable)) {
+    IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+    if (!(state.getBlock() instanceof BlockForgingTable)) {
       return;
     }
 
-    EnumFacing facing = tile.getWorld().getBlockState(tile.getPos()).getValue(BlockForgingTable.FACING);
+    EnumFacing facing = state.getValue(BlockForgingTable.FACING);
     float rotation = getModelRotation(facing);
 
-    // Keep placed stacks just above the Pyrotech-style recessed work surface.
+    // Keep placed stacks just above the TFC-style raised work surface.
     RenderHelper.enableStandardItemLighting();
     GlStateManager.enableRescaleNormal();
-    this.renderStack(tile.getInput(), x, y, z, rotation, 0.5, 0.69, 0.31, 0.46f);
-    this.renderStack(tile.getSecondaryInput(), x, y, z, rotation, 0.5, 0.69, 0.69, 0.46f);
-    this.renderStack(tile.getOutput(), x, y, z, rotation, 0.5, 0.71, 0.50, 0.54f);
+    this.renderStack(tile.getInput(), x, y, z, rotation, INPUT_X, WORK_SURFACE_Y, CENTER_Z, INPUT_SCALE);
+    this.renderStack(tile.getSecondaryInput(), x, y, z, rotation, SECONDARY_INPUT_X, WORK_SURFACE_Y, CENTER_Z, INPUT_SCALE);
+    this.renderStack(tile.getOutput(), x, y, z, rotation, WORK_SURFACE_CENTER_X, WORK_SURFACE_Y + 0.02, CENTER_Z, OUTPUT_SCALE);
     GlStateManager.disableRescaleNormal();
     RenderHelper.disableStandardItemLighting();
   }
@@ -59,12 +72,14 @@ public class TileForgingTableRenderer
   private static float getModelRotation(EnumFacing facing) {
 
     switch (facing) {
-      case EAST:
+      case NORTH:
         return 90;
-      case SOUTH:
+      case EAST:
         return 180;
-      case WEST:
+      case SOUTH:
         return 270;
+      case WEST:
+        return 0;
       default:
         return 0;
     }

@@ -7,20 +7,15 @@
     }
   ],
   "pattern": [
-    "III",
-    " A ",
-    "SSS"
+    "A",
+    "S"
   ],
   "key": {
-    "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotIron"
-    },
     "A": {
       "item": "pyrotech:anvil_iron_plated"
     },
     "S": {
-      "item": "minecraft:stone_slab",
+      "item": "minecraft:stone",
       "data": 0
     }
   },

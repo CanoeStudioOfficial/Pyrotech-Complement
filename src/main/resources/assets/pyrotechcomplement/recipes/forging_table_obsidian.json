@@ -7,17 +7,16 @@
     }
   ],
   "pattern": [
-    "III",
-    " A ",
-    "III"
+    "A",
+    "S"
   ],
   "key": {
-    "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotIron"
-    },
     "A": {
       "item": "pyrotech:anvil_obsidian"
+    },
+    "S": {
+      "item": "minecraft:stone",
+      "data": 0
     }
   },
   "result": {
